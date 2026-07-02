@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tour_package_user,tour.package.user,model_tour_package,base.group_user,1,0,0,0
+access_tour_package_portal,tour.package.portal,model_tour_package,base.group_portal,1,0,0,0
+access_tour_package_admin,tour.package.admin,model_tour_package,group_tour_admin,1,1,1,1
+
+access_tour_calendar_user,tour.calendar.user,model_tour_calendar,base.group_user,1,0,0,0
+access_tour_calendar_portal,tour.calendar.portal,model_tour_calendar,base.group_portal,1,0,0,0
+access_tour_calendar_admin,tour.calendar.admin,model_tour_calendar,group_tour_admin,1,1,1,1
+
+access_tour_booking_user,tour.booking.user,model_tour_booking,base.group_user,1,1,1,0
+access_tour_booking_portal,tour.booking.portal,model_tour_booking,base.group_portal,1,1,1,0
+access_tour_booking_admin,tour.booking.admin,model_tour_booking,group_tour_admin,1,1,1,1

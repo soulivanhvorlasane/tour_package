@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="tours_list" name="Tour Packages">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <section class="s_title pt32 pb32">
+                        <div class="container text-center">
+                            <h1>Available Tour Packages</h1>
+                        </div>
+                    </section>
+                </div>
+                <div class="container mt-4 mb-4">
+                    <div class="row">
+                        <t t-foreach="packages" t-as="pkg">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div t-if="pkg.image" class="card-img-top" t-attf-style="background-image: url('data:image/png;base64,#{pkg.image}'); background-size: cover; height: 200px;"/>
+                                    <div class="card-body">
+                                        <h5 class="card-title"><t t-esc="pkg.name"/></h5>
+                                        <p class="card-text text-muted">
+                                            <t t-esc="pkg.duration"/> Days
+                                        </p>
+                                        <h6 class="card-subtitle mb-2 text-primary">
+                                            <t t-esc="pkg.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        </h6>
+                                        <a t-attf-href="/tour/#{pkg.id}" class="btn btn-primary mt-3">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="tour_detail" name="Tour Detail">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h1><t t-esc="package.name"/></h1>
+                            <div t-if="package.image" class="mb-4">
+                                <img t-attf-src="data:image/png;base64,#{package.image}" class="img-fluid rounded" alt="Tour Image"/>
+                            </div>
+                            <div class="mt-4">
+                                <h3>Description</h3>
+                                <div t-raw="package.description"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h3 class="card-title">Book this Tour</h3>
+                                    <h4 class="text-primary mb-4">
+                                        <t t-esc="package.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> / person
+                                    </h4>
+                                    
+                                    <t t-if="request.params.get('error') == 'unavailable'">
+                                        <div class="alert alert-danger">
+                                            The selected date does not have enough available seats.
+                                        </div>
+                                    </t>
+
+                                    <form action="/tour/book" method="post" t-if="calendars">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <div class="mb-3">
+                                            <label for="calendar_id" class="form-label">Select Date</label>
+                                            <select name="calendar_id" id="calendar_id" class="form-select" required="1">
+                                                <t t-foreach="calendars" t-as="cal">
+                                                    <option t-att-value="cal.id">
+                                                        <t t-esc="cal.date_start"/> to <t t-esc="cal.date_end"/> (<t t-esc="cal.remaining_seats"/> seats left)
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="seats" class="form-label">Number of Seats</label>
+                                            <input type="number" name="seats" id="seats" class="form-control" value="1" min="1" required="1"/>
+                                        </div>
+                                        <button type="submit" class="btn btn-success w-100">Book Now</button>
+                                    </form>
+                                    <div t-else="" class="alert alert-warning">
+                                        No upcoming dates available for this tour.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_bookings" name="My Bookings">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Bookings</t>
+            </t>
+            <t t-if="not bookings">
+                <p class="alert alert-warning mt-4">You don't have any tour bookings yet.</p>
+            </t>
+            <t t-if="bookings" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Booking Ref</th>
+                        <th>Tour Package</th>
+                        <th>Date</th>
+                        <th>Seats</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="bookings" t-as="booking">
+                        <tr>
+                            <td><a t-attf-href="/my/bookings/#{booking.id}"><t t-esc="booking.name"/></a></td>
+                            <td><t t-esc="booking.package_id.name"/></td>
+                            <td><t t-esc="booking.calendar_id.date_start"/></td>
+                            <td><t t-esc="booking.seats"/></td>
+                            <td>
+                                <span t-attf-class="badge rounded-pill #{'bg-success' if booking.state == 'confirmed' else 'bg-info' if booking.state == 'draft' else 'bg-danger'}">
+                                    <t t-esc="dict(booking.fields_get(allfields=['state'])['state']['selection'])[booking.state]"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_booking_detail" name="Booking Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <div class="card mt-4">
+                <div class="card-header bg-white">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h4>Booking <span t-esc="booking.name"/></h4>
+                        </div>
+                        <div class="col-lg-6 text-end">
+                            <span t-attf-class="badge #{'bg-success' if booking.state == 'confirmed' else 'bg-info' if booking.state == 'draft' else 'bg-danger'}">
+                                <t t-esc="dict(booking.fields_get(allfields=['state'])['state']['selection'])[booking.state]"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <strong>Tour Package:</strong> <span t-esc="booking.package_id.name"/><br/>
+                            <strong>Start Date:</strong> <span t-esc="booking.calendar_id.date_start"/><br/>
+                            <strong>End Date:</strong> <span t-esc="booking.calendar_id.date_end"/><br/>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <strong>Number of Seats:</strong> <span t-esc="booking.seats"/><br/>
+                            <strong>Total Price:</strong> <span t-esc="booking.total_price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/><br/>
+                        </div>
+                    </div>
+                    <t t-if="booking.state == 'draft'">
+                        <div class="alert alert-info mt-3">
+                            Your booking is currently in draft state. It will be confirmed by an administrator soon.
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Add Bookings to Portal Home -->
+    <template id="portal_my_home_menu_tour" name="Portal layout : tour entries" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'booking'" t-attf-class="breadcrumb-item #{'active ' if not booking else ''}">
+                <a t-if="booking" t-attf-href="/my/bookings?{{ keep_query() }}">Bookings</a>
+                <t t-else="">Bookings</t>
+            </li>
+            <li t-if="booking" class="breadcrumb-item active">
+                <t t-esc="booking.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_tour" name="Show Bookings" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Tour Bookings</t>
+                <t t-set="url" t-value="'/my/bookings'"/>
+                <t t-set="placeholder_count" t-value="'booking_count'"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>

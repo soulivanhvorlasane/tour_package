@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tour_package_form" model="ir.ui.view">
+        <field name="name">tour.package.form</field>
+        <field name="model">tour.package</field>
+        <field name="arch" type="xml">
+            <form string="Tour Package">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Package Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="price"/>
+                            <field name="duration"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" widget="html"/>
+                        </page>
+                        <page string="Availabilities" name="calendar">
+                            <field name="calendar_ids">
+                                <list string="Calendar" editable="bottom">
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="available_seats"/>
+                                    <field name="booked_seats"/>
+                                    <field name="remaining_seats"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tour_package_list" model="ir.ui.view">
+        <field name="name">tour.package.list</field>
+        <field name="model">tour.package</field>
+        <field name="arch" type="xml">
+            <list string="Tour Packages">
+                <field name="name"/>
+                <field name="price"/>
+                <field name="duration"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_tour_package" model="ir.actions.act_window">
+        <field name="name">Tour Packages</field>
+        <field name="res_model">tour.package</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new tour package!
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_tour_booking" model="ir.actions.report">
+        <field name="name">Tour Booking Receipt</field>
+        <field name="model">tour.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tour_package.report_tour_booking</field>
+        <field name="report_file">tour_package.report_tour_booking</field>
+        <field name="print_report_name">'Booking - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_tour_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

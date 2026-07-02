@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top Menu Item -->
+    <menuitem id="menu_tour_root" name="Tour Packages" sequence="10" web_icon="tour_package,static/description/icon.png"/>
+
+    <!-- Sub Menu Items -->
+    <menuitem id="menu_tour_management" name="Tours" parent="menu_tour_root" sequence="10"/>
+    <menuitem id="menu_tour_bookings" name="Bookings" parent="menu_tour_root" sequence="20"/>
+
+    <!-- Actions -->
+    <menuitem id="menu_tour_package_action" name="Packages" parent="menu_tour_management" action="action_tour_package" sequence="10"/>
+    <menuitem id="menu_tour_calendar_action" name="Calendar" parent="menu_tour_management" action="action_tour_calendar" sequence="20"/>
+    <menuitem id="menu_tour_booking_action" name="All Bookings" parent="menu_tour_bookings" action="action_tour_booking" sequence="10"/>
+</odoo>

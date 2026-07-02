@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tour_calendar_form" model="ir.ui.view">
+        <field name="name">tour.calendar.form</field>
+        <field name="model">tour.calendar</field>
+        <field name="arch" type="xml">
+            <form string="Tour Availability">
+                <header>
+                    <button name="action_open" string="Open for Booking" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_close" string="Close" type="object" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,full,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="package_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="available_seats"/>
+                            <field name="booked_seats"/>
+                            <field name="remaining_seats"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Bookings" name="bookings">
+                            <field name="booking_ids" readonly="1">
+                                <list string="Bookings">
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="seats"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tour_calendar_list" model="ir.ui.view">
+        <field name="name">tour.calendar.list</field>
+        <field name="model">tour.calendar</field>
+        <field name="arch" type="xml">
+            <list string="Tour Availability">
+                <field name="package_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="available_seats"/>
+                <field name="remaining_seats"/>
+                <field name="state" widget="badge" decoration-success="state == 'open'" decoration-info="state == 'draft'" decoration-danger="state in ('closed', 'full')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tour_calendar_calendar" model="ir.ui.view">
+        <field name="name">tour.calendar.calendar</field>
+        <field name="model">tour.calendar</field>
+        <field name="arch" type="xml">
+            <calendar string="Tour Availability" date_start="date_start" date_stop="date_end" color="package_id" mode="month">
+                <field name="package_id"/>
+                <field name="remaining_seats"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_tour_calendar" model="ir.actions.act_window">
+        <field name="name">Tour Calendar</field>
+        <field name="res_model">tour.calendar</field>
+        <field name="view_mode">calendar,list,form</field>
+    </record>
+</odoo>

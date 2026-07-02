@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_tour_booking">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <h2>Tour Booking Receipt</h2>
+                                <h4><span t-field="doc.name"/></h4>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>Customer:</strong>
+                                <div t-field="doc.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone", "email"]}'/>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt32 mb32">
+                            <div class="col-auto">
+                                <strong>Status:</strong>
+                                <p class="m-0" t-field="doc.state"/>
+                            </div>
+                            <div class="col-auto">
+                                <strong>Booking Date:</strong>
+                                <p class="m-0" t-field="doc.create_date" t-options='{"widget": "date"}'/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th class="text-end">Seats</th>
+                                    <th class="text-end">Total Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="doc.package_id.name"/></td>
+                                    <td><span t-field="doc.calendar_id.date_start"/></td>
+                                    <td><span t-field="doc.calendar_id.date_end"/></td>
+                                    <td class="text-end"><span t-field="doc.seats"/></td>
+                                    <td class="text-end">
+                                        <span t-field="doc.total_price" t-options='{"widget": "monetary", "display_currency": res_company.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

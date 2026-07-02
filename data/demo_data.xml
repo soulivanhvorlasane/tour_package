@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Package 1 -->
+        <record id="demo_tour_package_1" model="tour.package">
+            <field name="name">Tropical Paradise Escape</field>
+            <field name="description"><![CDATA[<p>Experience the ultimate relaxation with our Tropical Paradise Escape. Enjoy pristine beaches, luxury resorts, and crystal-clear waters.</p>]]></field>
+            <field name="price">1200.00</field>
+            <field name="duration">7</field>
+        </record>
+
+        <!-- Calendar 1 -->
+        <record id="demo_tour_calendar_1" model="tour.calendar">
+            <field name="package_id" ref="demo_tour_package_1"/>
+            <field name="date_start" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=17)).strftime('%Y-%m-%d')"/>
+            <field name="available_seats">30</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Package 2 -->
+        <record id="demo_tour_package_2" model="tour.package">
+            <field name="name">Mountain Adventure Trek</field>
+            <field name="description"><![CDATA[<p>Challenge yourself with our Mountain Adventure Trek. Breathtaking views, expert guides, and unforgettable trails await.</p>]]></field>
+            <field name="price">850.00</field>
+            <field name="duration">5</field>
+        </record>
+
+        <!-- Calendar 2 -->
+        <record id="demo_tour_calendar_2" model="tour.calendar">
+            <field name="package_id" ref="demo_tour_package_2"/>
+            <field name="date_start" eval="(DateTime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=20)).strftime('%Y-%m-%d')"/>
+            <field name="available_seats">15</field>
+            <field name="state">open</field>
+        </record>
+
+        <!-- Package 3 -->
+        <record id="demo_tour_package_3" model="tour.package">
+            <field name="name">Historic City Tour</field>
+            <field name="description"><![CDATA[<p>Step back in time with our Historic City Tour. Visit ancient ruins, legendary museums, and taste local cuisine.</p>]]></field>
+            <field name="price">450.00</field>
+            <field name="duration">3</field>
+        </record>
+
+        <!-- Calendar 3 -->
+        <record id="demo_tour_calendar_3" model="tour.calendar">
+            <field name="package_id" ref="demo_tour_package_3"/>
+            <field name="date_start" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="date_end" eval="(DateTime.today() + relativedelta(days=8)).strftime('%Y-%m-%d')"/>
+            <field name="available_seats">40</field>
+            <field name="state">open</field>
+        </record>
+    </data>
+</odoo>
