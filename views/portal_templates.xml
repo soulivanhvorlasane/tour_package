@@ -49,6 +49,26 @@
                                 <h3>Description</h3>
                                 <div t-raw="package.description"/>
                             </div>
+
+                            <!-- Media Gallery -->
+                            <div class="mt-4" t-if="package.image_ids">
+                                <h3>Photo Gallery</h3>
+                                <div class="row">
+                                    <t t-foreach="package.image_ids" t-as="img">
+                                        <div class="col-md-4 mb-3">
+                                            <img t-attf-src="/web/image/#{img.id}" class="img-fluid rounded shadow-sm" alt="Gallery Image"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Video Preview -->
+                            <div class="mt-4 mb-5" t-if="package.embed_video_url">
+                                <h3>Video Preview</h3>
+                                <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
+                                    <iframe t-att-src="package.embed_video_url" title="YouTube video" allowfullscreen="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card bg-light">

@@ -37,6 +37,21 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Media &amp; Gallery" name="media">
+                            <group>
+                                <field name="video_url" placeholder="e.g. https://www.youtube.com/watch?v=..." widget="url"/>
+                                <field name="embed_video_url" invisible="1"/>
+                            </group>
+                            <group string="Gallery (Max 5 Images)">
+                                <div colspan="2" class="text-muted mb-2">
+                                    <i>Upload up to 5 images here. The images will be displayed in the gallery preview automatically.</i>
+                                </div>
+                                <field name="image_ids" widget="many2many_binary" options="{'accepted_file_extensions': 'image/*'}" nolabel="1" colspan="2"/>
+                            </group>
+                            <group string="Gallery Preview">
+                                <field name="preview_html" widget="html" nolabel="1" readonly="1" colspan="2" options="{'sanitize': False}"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
