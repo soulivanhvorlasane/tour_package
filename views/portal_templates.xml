@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="menu_tour_packages_website" model="website.menu">
+        <field name="name">Tour Packages</field>
+        <field name="url">/packages</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">50</field>
+    </record>
+
     <template id="tours_list" name="Tour Packages">
         <t t-call="website.layout">
             <div id="wrap">
@@ -16,15 +23,13 @@
                             <div class="col-md-4 mb-4">
                                 <div class="card h-100">
                                     <div t-if="pkg.image" class="card-img-top" t-attf-style="background-image: url('data:image/png;base64,#{pkg.image}'); background-size: cover; height: 200px;"/>
-                                    <div class="card-body">
+                                    <div class="card-body d-flex flex-column">
                                         <h5 class="card-title"><t t-esc="pkg.name"/></h5>
-                                        <p class="card-text text-muted">
-                                            <t t-esc="pkg.duration"/> Days
-                                        </p>
-                                        <h6 class="card-subtitle mb-2 text-primary">
+                                        <div class="card-text text-muted flex-grow-1" style="max-height: 80px; overflow: hidden;" t-raw="pkg.description"/>
+                                        <h6 class="card-subtitle mt-3 mb-3 text-primary fw-bold">
                                             <t t-esc="pkg.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                         </h6>
-                                        <a t-attf-href="/tour/#{pkg.id}" class="btn btn-primary mt-3">View Details</a>
+                                        <a t-attf-href="/packages/#{pkg.id}/book" class="btn btn-success mt-auto w-100">Book Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +89,7 @@
                                         </div>
                                     </t>
 
-                                    <form action="/tour/book" method="post" t-if="calendars">
+                                    <form action="/packages/book/confirm" method="post" t-if="calendars">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <div class="mb-3">
                                             <label for="calendar_id" class="form-label">Select Date</label>

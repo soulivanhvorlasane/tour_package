@@ -3,14 +3,14 @@ from odoo.http import request
 
 class TourPackageController(http.Controller):
 
-    @http.route(['/tours'], type='http', auth="public", website=True)
+    @http.route(['/packages'], type='http', auth="public", website=True)
     def tour_list(self, **kw):
-        packages = request.env['tour.package'].sudo().search([('active', '=', True)])
+        packages = request.env['tour.package'].sudo().search([('active', '=', True)], limit=3)
         return request.render('tour_package.tours_list', {
             'packages': packages,
         })
 
-    @http.route(['/tour/<model("tour.package"):package>'], type='http', auth="public", website=True)
+    @http.route(['/packages/<model("tour.package"):package>/book'], type='http', auth="public", website=True)
     def tour_detail(self, package, **kw):
         calendars = request.env['tour.calendar'].sudo().search([
             ('package_id', '=', package.id),
@@ -21,14 +21,14 @@ class TourPackageController(http.Controller):
             'calendars': calendars,
         })
 
-    @http.route(['/tour/book'], type='http', auth="user", website=True, methods=['POST'])
+    @http.route(['/packages/book/confirm'], type='http', auth="user", website=True, methods=['POST'])
     def tour_book(self, **post):
         calendar_id = int(post.get('calendar_id'))
         seats = int(post.get('seats', 1))
         
         calendar = request.env['tour.calendar'].sudo().browse(calendar_id)
         if not calendar.exists() or calendar.state != 'open' or calendar.remaining_seats < seats:
-            return request.redirect(f'/tour/{calendar.package_id.id}?error=unavailable')
+            return request.redirect(f'/packages/{calendar.package_id.id}/book?error=unavailable')
 
         booking = request.env['tour.booking'].sudo().create({
             'calendar_id': calendar.id,

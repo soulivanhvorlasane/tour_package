@@ -26,7 +26,7 @@
         'reports/booking_report_templates.xml',
     ],
     'demo': [
-        'data/demo_data.xml',
+        'data/demo.xml',
     ],
     'installable': True,
     'application': True,
