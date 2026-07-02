@@ -22,6 +22,27 @@ class TourPackage(models.Model):
 
     active = fields.Boolean(default=True)
 
+    start_date = fields.Date(string='Start Date', compute='_compute_dates', store=False)
+    end_date = fields.Date(string='End Date', compute='_compute_dates', store=False)
+    availability_status = fields.Char(string='Status', compute='_compute_availability_status', store=False)
+
+    @api.depends('calendar_ids.date_start', 'calendar_ids.date_end')
+    def _compute_dates(self):
+        for record in self:
+            starts = [d for d in record.calendar_ids.mapped('date_start') if d]
+            ends = [d for d in record.calendar_ids.mapped('date_end') if d]
+            record.start_date = min(starts) if starts else False
+            record.end_date = max(ends) if ends else False
+
+    @api.depends('calendar_ids.state')
+    def _compute_availability_status(self):
+        for record in self:
+            if any(cal.state == 'open' for cal in record.calendar_ids):
+                record.availability_status = 'Available'
+            elif all(cal.state == 'full' for cal in record.calendar_ids) and record.calendar_ids:
+                record.availability_status = 'Fully Booked'
+            else:
+                record.availability_status = 'Not Available'
     @api.depends('image_ids')
     def _compute_preview_html(self):
         for record in self:

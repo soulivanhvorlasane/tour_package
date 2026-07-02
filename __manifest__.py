@@ -22,6 +22,7 @@
         'views/tour_booking_views.xml',
         'views/menu_views.xml',
         'views/portal_templates.xml',
+        'views/website_templates.xml',
         'reports/booking_report_views.xml',
         'reports/booking_report_templates.xml',
     ],

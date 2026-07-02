@@ -16,6 +16,9 @@
                         <group>
                             <field name="price"/>
                             <field name="duration"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="availability_status"/>
                         </group>
                         <group>
                             <field name="active" widget="boolean_toggle"/>
@@ -54,11 +57,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -69,8 +68,12 @@
         <field name="arch" type="xml">
             <list string="Tour Packages">
                 <field name="name"/>
+                <field name="description"/>
                 <field name="price"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
                 <field name="duration"/>
+                <field name="availability_status"/>
             </list>
         </field>
     </record>

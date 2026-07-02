@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="website_tour_packages" name="Tour Packages">
+        <t t-call="website.layout">
+            <section class="container mt-4">
+                <div class="row">
+                    <t t-foreach="packages" t-as="pkg">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <img t-if="pkg.image" t-attf-src="data:image/png;base64,#{pkg.image}" class="card-img-top"/>
+                                <div class="card-body">
+                                    <h5 class="card-title"><t t-esc="pkg.name"/></h5>
+                                    <div class="card-text" t-raw="pkg.description"/>
+                                    <p>💲 <t t-esc="pkg.price"/> per person</p>
+                                    <p t-if="pkg.start_date">📅 <t t-esc="pkg.start_date"/> - <t t-esc="pkg.end_date"/></p>
+                                    <p t-if="pkg.availability_status">ℹ️ Status: <t t-esc="pkg.availability_status"/></p>
+                                    <a t-attf-href="/packages/#{pkg.id}/book" class="btn btn-primary"> More detail &amp; Book Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </section>
+        </t>
+    </template>
+</odoo>

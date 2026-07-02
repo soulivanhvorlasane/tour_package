@@ -40,79 +40,276 @@
 
     <template id="tour_detail" name="Tour Detail">
         <t t-call="website.layout">
+            <style>
+                .tour-card-container {
+                    max-width: 700px;
+                    margin: 0 auto;
+                }
+                .tour-card {
+                    border: 1px solid #e0e0e0;
+                    border-radius: 12px;
+                    padding: 10px;
+                    background: #fff;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                }
+                .collage-main {
+                    position: relative;
+                    height: 250px;
+                    margin-bottom: 5px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                }
+                .collage-main img { width: 100%; height: 100%; object-fit: cover; }
+                .play-btn {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 70px;
+                    height: 70px;
+                    background: rgba(0,0,0,0.6);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 30px;
+                    text-decoration: none !important;
+                    border: 3px solid white;
+                }
+                .play-btn i {
+                    margin-left: 5px;
+                }
+                .collage-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 5px;
+                }
+                .collage-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; }
+                
+                .section-title {
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    color: #000;
+                    font-weight: bold;
+                    margin: 30px 20px 20px;
+                    font-size: 18px;
+                }
+                .section-title::before, .section-title::after {
+                    content: '';
+                    flex: 1;
+                    border-bottom: 1px solid #ddd;
+                }
+                .section-title::before { margin-right: 15px; }
+                .section-title::after { margin-left: 15px; }
+                
+                .date-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 15px;
+                    margin: 0 20px 25px;
+                }
+                .date-radio { display: none; }
+                .date-label {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 8px 10px;
+                    border-radius: 25px;
+                    cursor: pointer;
+                    color: #333;
+                    font-size: 15px;
+                    transition: 0.2s;
+                }
+                .date-label .circle {
+                    width: 18px;
+                    height: 18px;
+                    border: 1px solid #777;
+                    border-radius: 50%;
+                    margin-right: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: transparent;
+                }
+                .date-radio:checked + .date-label {
+                    background-color: #4CAF50;
+                    color: white;
+                }
+                .date-radio:checked + .date-label .circle {
+                    border-color: white;
+                }
+                .date-radio:checked + .date-label .circle::after {
+                    content: "";
+                    width: 8px;
+                    height: 8px;
+                    background: white;
+                    border-radius: 50%;
+                }
+                .date-radio:disabled + .date-label {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                }
+                
+                .legend {
+                    display: flex;
+                    justify-content: center;
+                    gap: 40px;
+                    font-weight: bold;
+                    font-size: 14px;
+                    margin-bottom: 30px;
+                }
+                .legend-item { display: flex; align-items: center; gap: 8px; color: #555; }
+                .dot-green { width: 14px; height: 14px; background: #4CAF50; border-radius: 50%; }
+                .dot-red { width: 14px; height: 14px; background: #F44336; border-radius: 50%; }
+                
+                hr.divider {
+                    margin: 0 20px 20px;
+                    border-color: #eee;
+                }
+                
+                .summary-box {
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 15px 20px;
+                    max-width: 350px;
+                    margin: 0 auto 20px;
+                    background: #f9f9f9;
+                }
+                .summary-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 12px;
+                    font-size: 15px;
+                    color: #333;
+                }
+                .summary-item:last-child { margin-bottom: 0; }
+                .summary-item i { width: 25px; color: #666; font-size: 16px; text-align: center; margin-right: 5px; }
+                
+                .btn-book {
+                    background: linear-gradient(to bottom, #ff8c00, #e65c00);
+                    color: white;
+                    font-weight: bold;
+                    font-size: 18px;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 12px;
+                    width: 100%;
+                    max-width: 350px;
+                    display: block;
+                    margin: 0 auto 10px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }
+                .btn-book:hover {
+                    background: linear-gradient(to bottom, #ffa500, #ff7f00);
+                    color: white;
+                }
+            </style>
+            
             <div id="wrap">
                 <div class="container mt-5 mb-5">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h1><t t-esc="package.name"/></h1>
-                            <div t-if="package.image" class="mb-4">
-                                <img t-attf-src="data:image/png;base64,#{package.image}" class="img-fluid rounded" alt="Tour Image"/>
+                    
+                    <h1 class="text-center mb-4"><t t-esc="package.name"/></h1>
+                    
+                    <div class="tour-card-container">
+                        <div class="tour-card">
+                            <!-- Media Section -->
+                            <div class="collage-main" t-if="package.image">
+                                <img t-attf-src="data:image/png;base64,#{package.image}" alt="Tour Main Image"/>
+                                <a t-if="package.embed_video_url" t-att-href="package.embed_video_url" target="_blank" class="play-btn">
+                                    <i class="fa fa-play"></i>
+                                </a>
                             </div>
-                            <div class="mt-4">
-                                <h3>Description</h3>
-                                <div t-raw="package.description"/>
+                            <div class="collage-grid" t-if="package.image_ids">
+                                <t t-foreach="package.image_ids[:4]" t-as="img">
+                                    <img t-attf-src="/web/image/#{img.id}" alt="Gallery Image"/>
+                                </t>
                             </div>
+                            
+                            <t t-if="request.params.get('error') == 'unavailable'">
+                                <div class="alert alert-danger mx-3 mt-3">
+                                    The selected date does not have enough available seats.
+                                </div>
+                            </t>
 
-                            <!-- Media Gallery -->
-                            <div class="mt-4" t-if="package.image_ids">
-                                <h3>Photo Gallery</h3>
-                                <div class="row">
-                                    <t t-foreach="package.image_ids" t-as="img">
-                                        <div class="col-md-4 mb-3">
-                                            <img t-attf-src="/web/image/#{img.id}" class="img-fluid rounded shadow-sm" alt="Gallery Image"/>
+                            <form action="/packages/book/confirm" method="post" t-if="calendars" id="booking_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="seats" value="1"/>
+                                
+                                <h4 class="section-title">Select Your Travel Date:</h4>
+                                
+                                <div class="date-grid">
+                                    <t t-foreach="calendars" t-as="cal">
+                                        <div class="date-option">
+                                            <input type="radio" name="calendar_id" t-att-id="'cal_%s' % cal.id" t-att-value="cal.id" class="date-radio" t-att-disabled="cal.remaining_seats &lt;= 0" required="1" t-att-data-display="cal.date_start.strftime('%B %d') + ' - ' + cal.date_end.strftime('%d, %Y')"/>
+                                            <label t-att-for="'cal_%s' % cal.id" class="date-label">
+                                                <span class="circle"></span>
+                                                <t t-esc="cal.date_start.strftime('%B %d')"/> - <t t-esc="cal.date_end.strftime('%d')"/>
+                                            </label>
                                         </div>
                                     </t>
                                 </div>
-                            </div>
-
-                            <!-- Video Preview -->
-                            <div class="mt-4 mb-5" t-if="package.embed_video_url">
-                                <h3>Video Preview</h3>
-                                <div class="ratio ratio-16x9 shadow-sm rounded overflow-hidden">
-                                    <iframe t-att-src="package.embed_video_url" title="YouTube video" allowfullscreen="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                
+                                <div class="legend">
+                                    <div class="legend-item"><span class="dot-green"></span> <span class="text-success">Available Date</span></div>
+                                    <div class="legend-item"><span class="dot-red"></span> <span class="text-danger">Fully Booked</span></div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h3 class="card-title">Book this Tour</h3>
-                                    <h4 class="text-primary mb-4">
-                                        <t t-esc="package.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> / person
-                                    </h4>
-                                    
-                                    <t t-if="request.params.get('error') == 'unavailable'">
-                                        <div class="alert alert-danger">
-                                            The selected date does not have enough available seats.
-                                        </div>
-                                    </t>
-
-                                    <form action="/packages/book/confirm" method="post" t-if="calendars">
-                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                        <div class="mb-3">
-                                            <label for="calendar_id" class="form-label">Select Date</label>
-                                            <select name="calendar_id" id="calendar_id" class="form-select" required="1">
-                                                <t t-foreach="calendars" t-as="cal">
-                                                    <option t-att-value="cal.id">
-                                                        <t t-esc="cal.date_start"/> to <t t-esc="cal.date_end"/> (<t t-esc="cal.remaining_seats"/> seats left)
-                                                    </option>
-                                                </t>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="seats" class="form-label">Number of Seats</label>
-                                            <input type="number" name="seats" id="seats" class="form-control" value="1" min="1" required="1"/>
-                                        </div>
-                                        <button type="submit" class="btn btn-success w-100">Book Now</button>
-                                    </form>
-                                    <div t-else="" class="alert alert-warning">
-                                        No upcoming dates available for this tour.
+                                
+                                <hr class="divider"/>
+                                
+                                <div class="summary-box">
+                                    <div class="summary-item">
+                                        <i class="fa fa-calendar-o"></i> 
+                                        <span>Date: <span id="display_date">Select a date</span></span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <i class="fa fa-clock-o"></i> 
+                                        <span>Duration: <t t-esc="package.duration or 0"/> Days / <t t-esc="(package.duration or 1) - 1"/> Nights</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <i class="fa fa-dollar"></i> 
+                                        <span>Price: <strong>From <t t-esc="package.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> per person</strong></span>
                                     </div>
                                 </div>
+                                
+                                <button type="submit" class="btn btn-book">Confirm &amp; Book Now</button>
+                            </form>
+                            
+                            <div t-else="" class="alert alert-warning mt-4 mx-3">
+                                No upcoming dates available for this tour.
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="tour-card-container mt-4" t-if="package.description">
+                        <div class="tour-card p-4">
+                            <h3 class="border-bottom pb-2 mb-3">Tour Description</h3>
+                            <div t-raw="package.description"/>
+                        </div>
+                    </div>
+                    
                 </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const radios = document.querySelectorAll('.date-radio');
+                        const displayDate = document.getElementById('display_date');
+                        radios.forEach(r => {
+                            r.addEventListener('change', function() {
+                                if(this.checked) {
+                                    displayDate.textContent = this.getAttribute('data-display');
+                                }
+                            });
+                        });
+                        
+                        const firstAvailable = document.querySelector('.date-radio:not([disabled])');
+                        if (firstAvailable) {
+                            firstAvailable.checked = true;
+                            firstAvailable.dispatchEvent(new Event('change'));
+                        }
+                    });
+                </script>
             </div>
         </t>
     </template>

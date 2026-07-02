@@ -10,6 +10,13 @@ class TourPackageController(http.Controller):
             'packages': packages
         })
 
+    @http.route('/tour', type='http', auth='public', website=True)
+    def tour_packages(self, **kwargs):
+        packages = request.env['tour.package'].sudo().search([])
+        return request.render('tour_package.website_tour_packages', {
+            'packages': packages
+        })
+
     @http.route(['/packages/<int:package_id>/book'], type='http', auth='public', website=True)
     def tour_detail(self, package_id, **kw):
         package = request.env['tour.package'].sudo().browse(package_id)
