@@ -3,15 +3,16 @@ from odoo.http import request
 
 class TourPackageController(http.Controller):
 
-    @http.route(['/packages'], type='http', auth="public", website=True)
-    def tour_list(self, **kw):
-        packages = request.env['tour.package'].sudo().search([('active', '=', True)], limit=3)
-        return request.render('tour_package.tours_list', {
-            'packages': packages,
+    @http.route(['/packages'], type='http', auth='public', website=True)
+    def packages_page(self, **kwargs):
+        packages = request.env['tour.package'].sudo().search([], limit=3)
+        return request.render('tour_package.website_packages', {
+            'packages': packages
         })
 
-    @http.route(['/packages/<model("tour.package"):package>/book'], type='http', auth="public", website=True)
-    def tour_detail(self, package, **kw):
+    @http.route(['/packages/<int:package_id>/book'], type='http', auth='public', website=True)
+    def tour_detail(self, package_id, **kw):
+        package = request.env['tour.package'].sudo().browse(package_id)
         calendars = request.env['tour.calendar'].sudo().search([
             ('package_id', '=', package.id),
             ('state', '=', 'open')

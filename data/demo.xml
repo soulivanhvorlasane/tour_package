@@ -1,99 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
-        <!-- Package 1 -->
-        <record id="demo_tour_package_1" model="tour.package">
-            <field name="name">Tropical Paradise Escape</field>
-            <field name="description"><![CDATA[<p>Experience the ultimate relaxation with our Tropical Paradise Escape. Enjoy pristine beaches, luxury resorts, and crystal-clear waters.</p>]]></field>
-            <field name="price">1200.00</field>
-            <field name="duration">7</field>
-            <field name="video_url">https://www.youtube.com/watch?v=dQw4w9WgXcQ</field>
-        </record>
+  <record id="tour_package_demo1" model="tour.package">
+    <field name="name">Laos Adventure</field>
+    <field name="description">Explore Vientiane and Luang Prabang</field>
+    <field name="price">500</field>
+  </record>
+  <record id="tour_package_demo2" model="tour.package">
+    <field name="name">Mekong Cruise</field>
+    <field name="description">Relax on the Mekong River</field>
+    <field name="price">800</field>
+  </record>
+  <record id="tour_package_demo3" model="tour.package">
+    <field name="name">Mountain Trek</field>
+    <field name="description">Hike through northern Laos</field>
+    <field name="price">600</field>
+  </record>
+  
+  <record id="demo_calendar_laos_1" model="tour.calendar">
+        <field name="package_id" ref="tour_package_demo1"/>
+        <field name="date_start" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d')"/>
+        <field name="date_end" eval="(DateTime.today() + relativedelta(days=14)).strftime('%Y-%m-%d')"/>
+        <field name="available_seats">20</field>
+        <field name="state">open</field>
+  </record>
 
-        <!-- Calendar 1 -->
-        <record id="demo_tour_calendar_1" model="tour.calendar">
-            <field name="package_id" ref="demo_tour_package_1"/>
-            <field name="date_start" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
-            <field name="date_end" eval="(DateTime.today() + relativedelta(days=17)).strftime('%Y-%m-%d')"/>
-            <field name="available_seats">30</field>
-            <field name="state">open</field>
-        </record>
+  <record id="demo_calendar_mekong_1" model="tour.calendar">
+        <field name="package_id" ref="tour_package_demo2"/>
+        <field name="date_start" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+        <field name="date_end" eval="(DateTime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+        <field name="available_seats">15</field>
+        <field name="state">open</field>
+  </record>
 
-        <!-- Package 2 -->
-        <record id="demo_tour_package_2" model="tour.package">
-            <field name="name">Mountain Adventure Trek</field>
-            <field name="description"><![CDATA[<p>Challenge yourself with our Mountain Adventure Trek. Breathtaking views, expert guides, and unforgettable trails await.</p>]]></field>
-            <field name="price">850.00</field>
-            <field name="duration">5</field>
-            <field name="video_url">https://www.youtube.com/watch?v=aqz-KE-bpKQ</field>
-        </record>
-
-        <!-- Calendar 2 -->
-        <record id="demo_tour_calendar_2" model="tour.calendar">
-            <field name="package_id" ref="demo_tour_package_2"/>
-            <field name="date_start" eval="(DateTime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
-            <field name="date_end" eval="(DateTime.today() + relativedelta(days=20)).strftime('%Y-%m-%d')"/>
-            <field name="available_seats">15</field>
-            <field name="state">open</field>
-        </record>
-
-        <!-- Package 3 -->
-        <record id="demo_tour_package_3" model="tour.package">
-            <field name="name">Historic City Tour</field>
-            <field name="description"><![CDATA[<p>Step back in time with our Historic City Tour. Visit ancient ruins, legendary museums, and taste local cuisine.</p>]]></field>
-            <field name="price">450.00</field>
-            <field name="duration">3</field>
-            <field name="video_url">https://www.youtube.com/watch?v=tO01J-M3g0U</field>
-        </record>
-
-        <!-- Calendar 3 -->
-        <record id="demo_tour_calendar_3" model="tour.calendar">
-            <field name="package_id" ref="demo_tour_package_3"/>
-            <field name="date_start" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
-            <field name="date_end" eval="(DateTime.today() + relativedelta(days=8)).strftime('%Y-%m-%d')"/>
-            <field name="available_seats">40</field>
-            <field name="state">open</field>
-        </record>
-
-        <!-- Package 1 Images -->
-        <record id="demo_tour_package_1_img1" model="ir.attachment">
-            <field name="name">Beach View.png</field>
-            <field name="datas">iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==</field>
-            <field name="res_model">tour.package</field>
-            <field name="res_id" ref="demo_tour_package_1"/>
-        </record>
-        <record id="demo_tour_package_1_img2" model="ir.attachment">
-            <field name="name">Resort Room.png</field>
-            <field name="datas">iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QAAAEjQIGh1QxBAAAAABJRU5ErkJggg==</field>
-            <field name="res_model">tour.package</field>
-            <field name="res_id" ref="demo_tour_package_1"/>
-        </record>
-
-        <!-- Package 2 Images -->
-        <record id="demo_tour_package_2_img1" model="ir.attachment">
-            <field name="name">Mountain Peak.png</field>
-            <field name="datas">iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPgPAAEEAQItE1mMAAAAAElFTkSuQmCC</field>
-            <field name="res_model">tour.package</field>
-            <field name="res_id" ref="demo_tour_package_2"/>
-        </record>
-
-        <!-- Package 3 Images -->
-        <record id="demo_tour_package_3_img1" model="ir.attachment">
-            <field name="name">City Center.png</field>
-            <field name="datas">iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==</field>
-            <field name="res_model">tour.package</field>
-            <field name="res_id" ref="demo_tour_package_3"/>
-        </record>
-        
-        <!-- Link Attachments to Packages -->
-        <record id="demo_tour_package_1" model="tour.package">
-            <field name="image_ids" eval="[(6, 0, [ref('demo_tour_package_1_img1'), ref('demo_tour_package_1_img2')])]"/>
-        </record>
-        <record id="demo_tour_package_2" model="tour.package">
-            <field name="image_ids" eval="[(6, 0, [ref('demo_tour_package_2_img1')])]"/>
-        </record>
-        <record id="demo_tour_package_3" model="tour.package">
-            <field name="image_ids" eval="[(6, 0, [ref('demo_tour_package_3_img1')])]"/>
-        </record>
-    </data>
+  <record id="demo_calendar_mountain_1" model="tour.calendar">
+        <field name="package_id" ref="tour_package_demo3"/>
+        <field name="date_start" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+        <field name="date_end" eval="(DateTime.today() + relativedelta(days=12)).strftime('%Y-%m-%d')"/>
+        <field name="available_seats">10</field>
+        <field name="state">open</field>
+  </record>
 </odoo>

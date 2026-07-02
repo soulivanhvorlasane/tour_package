@@ -8,34 +8,24 @@
     </record>
 
 
-    <template id="tours_list" name="Tour Packages">
+    <template id="website_packages" name="Tour Packages">
         <t t-call="website.layout">
-            <div id="wrap">
-                <div class="oe_structure">
-                    <section class="s_title pt32 pb32">
-                        <div class="container text-center">
-                            <h1>Available Tour Packages</h1>
-                        </div>
-                    </section>
-                </div>
-                <div class="container mt-4 mb-4">
-                    <div class="row">
-                        <t t-foreach="packages" t-as="pkg">
-                            <div class="col-md-4 mb-4">
-                                <div class="card h-100">
-                                    <div t-if="pkg.image" class="card-img-top" t-attf-style="background-image: url('data:image/png;base64,#{pkg.image}'); background-size: cover; height: 200px;"/>
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title"><t t-esc="pkg.name"/></h5>
-                                        <div class="card-text text-muted flex-grow-1" style="max-height: 80px; overflow: hidden;" t-raw="pkg.description"/>
-                                        <h6 class="card-subtitle mt-3 mb-3 text-primary fw-bold">
-                                            <t t-esc="pkg.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
-                                        </h6>
-                                        <a t-attf-href="/packages/#{pkg.id}/book" class="btn btn-success mt-auto w-100">Book Now</a>
-                                    </div>
+            <div class="container">
+                <h1>Featured Tour Packages</h1>
+                <div class="row">
+                    <t t-foreach="packages" t-as="pkg">
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3><t t-esc="pkg.name"/></h3>
+                                    <p><t t-esc="pkg.description"/></p>
+                                    <p>Price: <t t-esc="pkg.price"/></p>
+                                    <a t-att-href="'/packages/%s/book' % pkg.id"
+                                       class="btn btn-primary">Book Now</a>
                                 </div>
                             </div>
-                        </t>
-                    </div>
+                        </div>
+                    </t>
                 </div>
             </div>
         </t>
@@ -45,7 +35,7 @@
         <field name="name">Tour Packages</field>
         <field name="url">/packages</field>
         <field name="is_published">True</field>
-        <field name="view_id" ref="tour_package.tours_list"/>
+        <field name="view_id" ref="tour_package.website_packages"/>
     </record>
 
     <template id="tour_detail" name="Tour Detail">
