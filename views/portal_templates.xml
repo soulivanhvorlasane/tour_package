@@ -42,7 +42,7 @@
         <t t-call="website.layout">
             <style>
                 .tour-card-container {
-                    max-width: 700px;
+                    width: 100%;
                     margin: 0 auto;
                 }
                 .tour-card {
@@ -208,25 +208,64 @@
             </style>
             
             <div id="wrap">
-                <div class="container mt-5 mb-5">
+                <div class="container-fluid px-4 mt-5 mb-5">
                     
                     <h1 class="text-center mb-4"><t t-esc="package.name"/></h1>
                     
-                    <div class="tour-card-container">
-                        <div class="tour-card">
-                            <!-- Media Section -->
-                            <div class="collage-main" t-if="package.image">
-                                <img t-attf-src="data:image/png;base64,#{package.image}" alt="Tour Main Image"/>
-                                <a t-if="package.embed_video_url" t-att-href="package.embed_video_url" target="_blank" class="play-btn">
-                                    <i class="fa fa-play"></i>
-                                </a>
+                    <div class="tour-card-container mb-4">
+                        <div class="tour-card p-0 overflow-hidden">
+                            <div class="row g-0 align-items-stretch">
+                                <!-- Left Column: Image -->
+                                <div class="col-md-5 col-lg-6">
+                                    <div class="collage-main m-0" t-if="package.image" style="height: 350px; border-radius: 0;">
+                                        <img t-attf-src="data:image/png;base64,#{package.image}" alt="Tour Main Image" 
+                                             class="gallery-thumbnail" 
+                                             style="cursor: pointer; width: 100%; height: 100%; object-fit: cover; border-radius: 0;"
+                                             data-bs-toggle="modal" data-bs-target="#imageModal"
+                                             t-attf-data-image-src="data:image/png;base64,#{package.image}"/>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right Column: Description -->
+                                <div class="col-md-7 col-lg-6" t-if="package.description">
+                                    <div class="p-4 h-100 overflow-auto" style="max-height: 450px;">
+                                        <h3 class="border-bottom pb-2 mb-3">Tour Description</h3>
+                                        <div t-raw="package.description"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="collage-grid" t-if="package.image_ids">
-                                <t t-foreach="package.image_ids[:4]" t-as="img">
-                                    <img t-attf-src="/web/image/#{img.id}" alt="Gallery Image"/>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-card-container mt-4" t-if="package.embed_video_url">
+                        <div class="tour-card p-4">
+                            <h3 class="border-bottom pb-2 mb-3">Tour Video</h3>
+                            <div class="ratio ratio-16x9">
+                                <iframe t-att-src="package.embed_video_url + '?autoplay=1&amp;mute=1'" allow="autoplay; encrypted-media" allowfullscreen="1" frameborder="0" style="width: 100%; min-height: 350px;"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-card-container mt-4" t-if="package.image_ids">
+                        <div class="tour-card p-4">
+                            <h3 class="border-bottom pb-2 mb-3">Photo Gallery</h3>
+                            <div class="row g-2">
+                                <t t-foreach="package.image_ids" t-as="img">
+                                    <div class="col-6 col-md-4">
+                                        <img t-attf-src="/web/image/#{img.id}" alt="Gallery Image" 
+                                             class="img-fluid rounded gallery-thumbnail shadow-sm" 
+                                             style="cursor: pointer; object-fit: cover; height: 150px; width: 100%;"
+                                             data-bs-toggle="modal" data-bs-target="#imageModal"
+                                             t-attf-data-image-src="/web/image/#{img.id}"/>
+                                    </div>
                                 </t>
                             </div>
-                            
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Section -->
+                    <div class="tour-card-container mt-4 mb-5">
+                        <div class="tour-card p-4">
                             <t t-if="request.params.get('error') == 'unavailable'">
                                 <div class="alert alert-danger mx-3 mt-3">
                                     The selected date does not have enough available seats.
@@ -235,14 +274,14 @@
 
                             <form action="/packages/book/confirm" method="post" t-if="calendars" id="booking_form">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                <input type="hidden" name="seats" value="1"/>
                                 
-                                <h4 class="section-title">Select Your Travel Date:</h4>
+                                <h3 class="border-bottom pb-2 mb-3">Book Your Tour</h3>
+                                <h4 class="section-title mt-2">Select Your Travel Date:</h4>
                                 
                                 <div class="date-grid">
                                     <t t-foreach="calendars" t-as="cal">
                                         <div class="date-option">
-                                            <input type="radio" name="calendar_id" t-att-id="'cal_%s' % cal.id" t-att-value="cal.id" class="date-radio" t-att-disabled="cal.remaining_seats &lt;= 0" required="1" t-att-data-display="cal.date_start.strftime('%B %d') + ' - ' + cal.date_end.strftime('%d, %Y')"/>
+                                            <input type="radio" name="calendar_id" t-att-id="'cal_%s' % cal.id" t-att-value="cal.id" class="date-radio" t-att-disabled="cal.remaining_seats &lt;= 0" required="1" t-att-data-display="cal.date_start.strftime('%B %d') + ' - ' + cal.date_end.strftime('%d, %Y')" t-att-data-remaining-seats="cal.remaining_seats" t-att-data-total-seats="cal.available_seats" t-att-data-booked-seats="cal.booked_seats"/>
                                             <label t-att-for="'cal_%s' % cal.id" class="date-label">
                                                 <span class="circle"></span>
                                                 <t t-esc="cal.date_start.strftime('%B %d')"/> - <t t-esc="cal.date_end.strftime('%d')"/>
@@ -268,8 +307,22 @@
                                         <span>Duration: <t t-esc="package.duration or 0"/> Days / <t t-esc="(package.duration or 1) - 1"/> Nights</span>
                                     </div>
                                     <div class="summary-item">
-                                        <i class="fa fa-dollar"></i> 
-                                        <span>Price: <strong>From <t t-esc="package.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> per person</strong></span>
+                                        <i class="fa fa-tag"></i> 
+                                        <span>Price: <t t-esc="package.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/> per person</span>
+                                    </div>
+                                    <div class="summary-item mt-2">
+                                        <i class="fa fa-users"></i> 
+                                        <div class="d-flex align-items-center w-100">
+                                            <span class="me-3">Seats:</span>
+                                            <input type="number" name="seats" id="seat_input" value="1" min="1" class="form-control text-center p-1" style="width: 80px;"/>
+                                            <span class="ms-3 text-muted small" id="max_seats_display"></span>
+                                        </div>
+                                    </div>
+                                    <div class="summary-item mt-3 pt-3 border-top">
+                                        <i class="fa fa-calculator"></i> 
+                                        <span class="fs-5">Total Price: <strong id="total_price_display" class="text-primary" t-att-data-unit-price="package.price" t-att-data-currency-symbol="res_company.currency_id.symbol" t-att-data-currency-position="res_company.currency_id.position">
+                                            <t t-esc="package.price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        </strong></span>
                                     </div>
                                 </div>
                                 
@@ -282,10 +335,23 @@
                         </div>
                     </div>
                     
-                    <div class="tour-card-container mt-4" t-if="package.description">
-                        <div class="tour-card p-4">
-                            <h3 class="border-bottom pb-2 mb-3">Tour Description</h3>
-                            <div t-raw="package.description"/>
+                    <!-- Image Modal -->
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content bg-transparent border-0 shadow-none">
+                                <div class="modal-header border-0 pb-0 justify-content-end">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white; padding: 10px; border-radius: 50%; opacity: 0.8;"></button>
+                                </div>
+                                <div class="modal-body text-center p-0 position-relative">
+                                    <button type="button" class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-3" id="prevImageBtn" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1055;">
+                                        <i class="fa fa-chevron-left"></i>
+                                    </button>
+                                    <img src="" id="modalImage" class="img-fluid rounded shadow" alt="Large view" style="max-height: 80vh;"/>
+                                    <button type="button" class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3" id="nextImageBtn" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1055;">
+                                        <i class="fa fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -295,10 +361,30 @@
                     document.addEventListener('DOMContentLoaded', function() {
                         const radios = document.querySelectorAll('.date-radio');
                         const displayDate = document.getElementById('display_date');
+                        const seatInputEl = document.getElementById('seat_input');
+                        
                         radios.forEach(r => {
                             r.addEventListener('change', function() {
                                 if(this.checked) {
                                     displayDate.textContent = this.getAttribute('data-display');
+                                    if (seatInputEl) {
+                                        let maxSeats = parseInt(this.getAttribute('data-remaining-seats'));
+                                        let totalSeats = parseInt(this.getAttribute('data-total-seats'));
+                                        let bookedSeats = parseInt(this.getAttribute('data-booked-seats'));
+                                        seatInputEl.setAttribute('max', maxSeats);
+                                        
+                                        const maxSeatsDisplay = document.getElementById('max_seats_display');
+                                        if (maxSeatsDisplay) {
+                                            maxSeatsDisplay.textContent = '(Booked: ' + bookedSeats + ' | Remaining: ' + maxSeats + ' | Total: ' + totalSeats + ' seats)';
+                                        }
+                                        
+                                        let currentSeats = parseInt(seatInputEl.value);
+                                        currentSeats = Math.max(1, currentSeats || 1);
+                                        if (currentSeats !== Math.min(currentSeats, maxSeats)) {
+                                            seatInputEl.value = maxSeats;
+                                            seatInputEl.dispatchEvent(new Event('input'));
+                                        }
+                                    }
                                 }
                             });
                         });
@@ -307,6 +393,72 @@
                         if (firstAvailable) {
                             firstAvailable.checked = true;
                             firstAvailable.dispatchEvent(new Event('change'));
+                        }
+                        
+                        // Image Modal logic
+                        const galleryThumbnails = Array.from(document.querySelectorAll('.gallery-thumbnail'));
+                        const modalImage = document.getElementById('modalImage');
+                        let currentImageIndex = 0;
+
+                        function updateModalImage(index) {
+                            if (galleryThumbnails.length === 0) return;
+                            if (index === -1) index = galleryThumbnails.length - 1;
+                            if (index === galleryThumbnails.length) index = 0;
+                            currentImageIndex = index;
+                            modalImage.src = galleryThumbnails[index].getAttribute('data-image-src');
+                        }
+
+                        galleryThumbnails.forEach((thumb, index) => {
+                            thumb.addEventListener('click', function() {
+                                updateModalImage(index);
+                            });
+                        });
+                        
+                        const prevBtn = document.getElementById('prevImageBtn');
+                        const nextBtn = document.getElementById('nextImageBtn');
+                        
+                        if (prevBtn) {
+                            prevBtn.addEventListener('click', () => updateModalImage(currentImageIndex - 1));
+                        }
+                        if (nextBtn) {
+                            nextBtn.addEventListener('click', () => updateModalImage(currentImageIndex + 1));
+                        }
+                        
+                        document.addEventListener('keydown', function(e) {
+                            if (document.body.classList.contains('modal-open')) {
+                                if (e.key === 'ArrowLeft') {
+                                    updateModalImage(currentImageIndex - 1);
+                                } else if (e.key === 'ArrowRight') {
+                                    updateModalImage(currentImageIndex + 1);
+                                }
+                            }
+                        });
+                        
+                        // Seat Price Calculation
+                        const seatInput = document.getElementById('seat_input');
+                        const priceDisplay = document.getElementById('total_price_display');
+                        if (seatInput &amp;&amp; priceDisplay) {
+                            seatInput.addEventListener('input', function() {
+                                let seats = parseInt(this.value);
+                                seats = Math.max(1, seats || 1); // Avoid XML less-than signs
+                                let maxSeats = parseInt(this.getAttribute('max'));
+                                if (!isNaN(maxSeats)) {
+                                    seats = Math.min(seats, maxSeats);
+                                    this.value = seats;
+                                }
+                                
+                                let unitPrice = parseFloat(priceDisplay.getAttribute('data-unit-price'));
+                                let symbol = priceDisplay.getAttribute('data-currency-symbol');
+                                let position = priceDisplay.getAttribute('data-currency-position');
+                                
+                                let total = (unitPrice * seats).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                                
+                                if (position === 'after') {
+                                    priceDisplay.textContent = total + ' ' + symbol;
+                                } else {
+                                    priceDisplay.textContent = symbol + total;
+                                }
+                            });
                         }
                     });
                 </script>

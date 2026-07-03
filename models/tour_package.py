@@ -59,8 +59,8 @@ class TourPackage(models.Model):
     @api.constrains('image_ids')
     def _check_image_limit(self):
         for record in self:
-            if len(record.image_ids) > 5:
-                raise ValidationError("You can upload a maximum of 5 images for the photo gallery.")
+            if len(record.image_ids) > 6:
+                raise ValidationError("You can upload a maximum of 6 images for the photo gallery.")
 
     @api.depends('video_url')
     def _compute_embed_video_url(self):
