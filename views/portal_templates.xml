@@ -326,7 +326,7 @@
                                     </div>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-book">Confirm &amp; Book Now</button>
+                                <button type="submit" class="btn btn-book w-100 mt-4">Confirm &amp; Book Now</button>
                             </form>
                             
                             <div t-else="" class="alert alert-warning mt-4 mx-3">
@@ -469,6 +469,15 @@
     <template id="portal_my_bookings" name="My Bookings">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-if="request.params.get('payment_success')">
+                <div class="alert alert-success mt-4">
+                    Your booking has been confirmed and payment received. 
+                    <t t-if="request.params.get('invoice_name')">
+                        Invoice <t t-esc="request.params.get('invoice_name')"/> generated.
+                    </t>
+                </div>
+            </t>
             
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Bookings</t>
