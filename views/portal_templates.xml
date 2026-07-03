@@ -252,11 +252,11 @@
                             <div class="row g-2">
                                 <t t-foreach="package.image_ids" t-as="img">
                                     <div class="col-6 col-md-4">
-                                        <img t-attf-src="/web/image/#{img.id}" alt="Gallery Image" 
+                                        <img t-attf-src="data:image/png;base64,#{img.datas}" alt="Gallery Image" 
                                              class="img-fluid rounded gallery-thumbnail shadow-sm" 
                                              style="cursor: pointer; object-fit: cover; height: 150px; width: 100%;"
                                              data-bs-toggle="modal" data-bs-target="#imageModal"
-                                             t-attf-data-image-src="/web/image/#{img.id}"/>
+                                             t-attf-data-image-src="data:image/png;base64,#{img.datas}"/>
                                     </div>
                                 </t>
                             </div>
