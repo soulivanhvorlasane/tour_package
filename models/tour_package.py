@@ -15,6 +15,7 @@ class TourPackage(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Package Name', required=True, tracking=True)
+    category_id = fields.Many2one('tour.package.category', string='Category')
     description = fields.Html(string='Description')
     price = fields.Float(string='Price per Person', required=True, tracking=True)
     duration = fields.Integer(string='Duration (Days)')

@@ -12,3 +12,4 @@ access_tour_calendar_admin,tour.calendar.admin,model_tour_calendar,group_tour_ad
 access_tour_booking_user,tour.booking.user,model_tour_booking,base.group_user,1,1,1,0
 access_tour_booking_portal,tour.booking.portal,model_tour_booking,base.group_portal,1,1,1,0
 access_tour_booking_admin,tour.booking.admin,model_tour_booking,group_tour_admin,1,1,1,1
+access_tour_package_category_public,access.tour.package.category,model_tour_package_category,base.group_user,1,1,1,1

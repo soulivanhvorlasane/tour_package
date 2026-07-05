@@ -14,6 +14,7 @@
                     </div>
                     <group>
                         <group>
+                            <field name="category_id"/>
                             <field name="price"/>
                             <field name="duration"/>
                             <field name="start_date"/>
@@ -68,6 +69,7 @@
         <field name="arch" type="xml">
             <list string="Tour Packages">
                 <field name="name"/>
+                <field name="category_id"/>
                 <field name="description"/>
                 <field name="price"/>
                 <field name="start_date"/>
@@ -75,6 +77,18 @@
                 <field name="duration"/>
                 <field name="availability_status"/>
             </list>
+        </field>
+    </record>
+
+    <record id="view_tour_package_search" model="ir.ui.view">
+        <field name="name">tour.package.search</field>
+        <field name="model">tour.package</field>
+        <field name="arch" type="xml">
+            <search string="Tour Packages">
+                <field name="name"/>
+                <field name="category_id"/>
+                <filter name="group_by_category" string="Category" context="{'group_by':'category_id'}"/>
+            </search>
         </field>
     </record>
 

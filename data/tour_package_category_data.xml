@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="category_cultural" model="tour.package.category">
+            <field name="name">Cultural &amp; Heritage Tours</field>
+            <field name="description">temples, museums, historical sites</field>
+        </record>
+        <record id="category_nature" model="tour.package.category">
+            <field name="name">Nature &amp; Adventure Tours</field>
+            <field name="description">trekking, hiking, waterfalls, caves</field>
+        </record>
+        <record id="category_beach" model="tour.package.category">
+            <field name="name">Beach &amp; Island Tours</field>
+            <field name="description">tropical escapes, snorkeling, diving</field>
+        </record>
+        <record id="category_eco" model="tour.package.category">
+            <field name="name">Eco &amp; Community Tours</field>
+            <field name="description">village stays, handicrafts, local life</field>
+        </record>
+        <record id="category_food" model="tour.package.category">
+            <field name="name">Food &amp; Culinary Tours</field>
+            <field name="description">street food, cooking classes, wine tasting</field>
+        </record>
+        <record id="category_wildlife" model="tour.package.category">
+            <field name="name">Wildlife &amp; Safari Tours</field>
+            <field name="description">national parks, elephant sanctuaries</field>
+        </record>
+        <record id="category_city" model="tour.package.category">
+            <field name="name">City &amp; Urban Tours</field>
+            <field name="description">sightseeing, landmarks, nightlife</field>
+        </record>
+        <record id="category_sports" model="tour.package.category">
+            <field name="name">Sports &amp; Activity Tours</field>
+            <field name="description">cycling, kayaking, zipline, golf</field>
+        </record>
+        <record id="category_wellness" model="tour.package.category">
+            <field name="name">Wellness &amp; Retreat Tours</field>
+            <field name="description">spa, meditation, yoga, hot springs</field>
+        </record>
+        <record id="category_festival" model="tour.package.category">
+            <field name="name">Festival &amp; Event Tours</field>
+            <field name="description">cultural festivals, concerts, seasonal events</field>
+        </record>
+    </data>
+</odoo>
+

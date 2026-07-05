@@ -18,6 +18,8 @@
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
         'data/mail_template_data.xml',
+        'data/tour_package_category_data.xml',
+        'views/tour_package_category_views.xml',
         'views/tour_package_views.xml',
         'views/tour_calendar_views.xml',
         'views/tour_booking_views.xml',
