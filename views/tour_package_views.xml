@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Tour Package">
                 <sheet>
-                    <field name="image" widget="image" class="oe_avatar"/>
+                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image', 'placeholder': '/tour_package/static/img/default_cover.png'}"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Package Name"/>

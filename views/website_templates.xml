@@ -7,7 +7,12 @@
                     <t t-foreach="packages" t-as="pkg">
                         <div class="col-md-4 mb-3">
                             <div class="card h-100">
-                                <img t-if="pkg.image" t-attf-src="data:image/png;base64,#{pkg.image}" class="card-img-top"/>
+                                <t t-if="pkg.image">
+                                    <img t-attf-src="data:image/png;base64,#{pkg.image}" class="card-img-top" style="height: 220px; object-fit: cover; width: 100%;"/>
+                                </t>
+                                <t t-else="">
+                                    <img src="/tour_package/static/img/default_cover.png" class="card-img-top" style="height: 220px; object-fit: cover; width: 100%;"/>
+                                </t>
                                 <div class="card-body">
                                     <h5 class="card-title"><t t-esc="pkg.name"/></h5>
                                     <div class="card-text" t-raw="pkg.description"/>
