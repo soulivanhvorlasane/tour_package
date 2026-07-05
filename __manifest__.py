@@ -16,6 +16,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'data/ir_cron.xml',
         'data/mail_template_data.xml',
         'views/tour_package_views.xml',
         'views/tour_calendar_views.xml',

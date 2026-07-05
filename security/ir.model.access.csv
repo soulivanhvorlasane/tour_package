@@ -1,8 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tour_package_public,tour.package.public,model_tour_package,base.group_public,1,0,0,0
 access_tour_package_user,tour.package.user,model_tour_package,base.group_user,1,0,0,0
 access_tour_package_portal,tour.package.portal,model_tour_package,base.group_portal,1,0,0,0
 access_tour_package_admin,tour.package.admin,model_tour_package,group_tour_admin,1,1,1,1
 
+access_tour_calendar_public,tour.calendar.public,model_tour_calendar,base.group_public,1,0,0,0
 access_tour_calendar_user,tour.calendar.user,model_tour_calendar,base.group_user,1,0,0,0
 access_tour_calendar_portal,tour.calendar.portal,model_tour_calendar,base.group_portal,1,0,0,0
 access_tour_calendar_admin,tour.calendar.admin,model_tour_calendar,group_tour_admin,1,1,1,1

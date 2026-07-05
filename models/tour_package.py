@@ -1,5 +1,13 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, tools
 from odoo.exceptions import ValidationError
+from odoo.modules.module import get_module_resource
+import base64
+import os
+import shutil
+import datetime
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class TourPackage(models.Model):
     _name = 'tour.package'
@@ -10,7 +18,7 @@ class TourPackage(models.Model):
     description = fields.Html(string='Description')
     price = fields.Float(string='Price per Person', required=True, tracking=True)
     duration = fields.Integer(string='Duration (Days)')
-    image = fields.Image(string='Main Image')
+    cover_image = fields.Binary(string='Cover Image', attachment=True)
     
     calendar_ids = fields.One2many('tour.calendar', 'package_id', string='Availabilities')
     
@@ -33,6 +41,46 @@ class TourPackage(models.Model):
             ends = [d for d in record.calendar_ids.mapped('date_end') if d]
             record.start_date = min(starts) if starts else False
             record.end_date = max(ends) if ends else False
+
+    def write(self, vals):
+        if 'cover_image' in vals:
+            for record in self:
+                attachment = self.env['ir.attachment'].search([
+                    ('res_model', '=', self._name),
+                    ('res_field', '=', 'cover_image'),
+                    ('res_id', '=', record.id)
+                ], limit=1)
+                if attachment:
+                    attachment.unlink()
+        return super(TourPackage, self).write(vals)
+
+
+
+    @api.model
+    def _cron_backup_images(self):
+        filestore_path = tools.config.filestore(self.env.cr.dbname)
+        source_dir = os.path.join(filestore_path, 'tour_package')
+        
+        if not os.path.exists(source_dir):
+            _logger.info("No tour_package images found to backup.")
+            return
+
+        # Backup destination: /backups/tour_package_images/ relative to Odoo root
+        # tools.config['root_path'] is typically the 'odoo' folder inside the project root
+        project_root = os.path.dirname(tools.config['root_path'])
+        backup_root = os.path.join(project_root, 'backups', 'tour_package_images')
+        
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
+        backup_dir = os.path.join(backup_root, timestamp)
+        
+        if not os.path.exists(backup_root):
+            os.makedirs(backup_root)
+            
+        if os.path.exists(backup_dir):
+            shutil.rmtree(backup_dir)
+            
+        shutil.copytree(source_dir, backup_dir)
+        _logger.info("Successfully backed up tour_package images to %s", backup_dir)
 
     @api.depends('calendar_ids.state')
     def _compute_availability_status(self):
