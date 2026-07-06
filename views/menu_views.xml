@@ -7,10 +7,17 @@
     <menuitem id="menu_tour_management" name="Tours" parent="menu_tour_root" sequence="10"/>
     <menuitem id="menu_tour_bookings" name="Bookings" parent="menu_tour_root" sequence="20"/>
 
+    <record id="action_booking_calendar_only" model="ir.actions.act_window">
+        <field name="name">Booking Calendar</field>
+        <field name="res_model">tour.booking</field>
+        <field name="view_mode">calendar,list,form</field>
+    </record>
+
     <!-- Actions -->
     <menuitem id="menu_tour_package_action" name="Packages" parent="menu_tour_configuration" action="action_tour_package" sequence="10"/>
     <menuitem id="menu_tour_calendar_action" name="Calendar" parent="menu_tour_configuration" action="action_tour_calendar" sequence="20"/>
     <menuitem id="menu_tour_booking_action" name="All Bookings" parent="menu_tour_bookings" action="action_tour_booking" sequence="10"/>
+    <menuitem id="menu_tour_booking_calendar_action" name="Booking Calendar" parent="menu_tour_bookings" action="action_booking_calendar_only" sequence="20"/>
 
     <menuitem id="menu_tour_package_website"
               name="Tour Packages"

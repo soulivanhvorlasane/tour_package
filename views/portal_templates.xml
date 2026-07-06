@@ -631,6 +631,13 @@
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Bookings</t>
             </t>
+            
+            <div class="d-flex justify-content-end mb-3 mt-3">
+                <div class="btn-group" role="group">
+                    <a href="/my/bookings" class="btn btn-primary"><i class="fa fa-list"/> List</a>
+                    <a href="/my/bookings/calendar" class="btn btn-outline-primary"><i class="fa fa-calendar"/> Calendar</a>
+                </div>
+            </div>
             <t t-if="not bookings">
                 <p class="alert alert-warning mt-4">You don't have any tour bookings yet.</p>
             </t>
@@ -639,7 +646,8 @@
                     <tr>
                         <th>Booking Ref</th>
                         <th>Tour Package</th>
-                        <th>Date</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
                         <th>Seats</th>
                         <th>Status</th>
                     </tr>
@@ -649,7 +657,8 @@
                         <tr>
                             <td><a t-attf-href="/my/bookings/#{booking.id}"><t t-esc="booking.name"/></a></td>
                             <td><t t-esc="booking.package_id.name"/></td>
-                            <td><t t-esc="booking.calendar_id.date_start"/></td>
+                            <td><t t-esc="booking.date_start"/></td>
+                            <td><t t-esc="booking.date_end"/></td>
                             <td><t t-esc="booking.seats"/></td>
                             <td>
                                 <span t-attf-class="badge rounded-pill #{'bg-success' if booking.state == 'confirmed' else 'bg-info' if booking.state == 'draft' else 'bg-danger'}">
@@ -711,6 +720,14 @@
             <li t-if="booking" class="breadcrumb-item active">
                 <t t-esc="booking.name"/>
             </li>
+        </xpath>
+    </template>
+
+    <template id="tour_booking_user_dropdown" name="Bookings in User Dropdown" inherit_id="portal.user_dropdown" priority="20">
+        <xpath expr="//*[@id='o_logout_divider']" position="before">
+            <a href="/my/bookings" role="menuitem" class="dropdown-item ps-3">
+                <i class="fa fa-fw fa-calendar-check-o me-1 small text-primary text-primary-emphasis"/> My Bookings
+            </a>
         </xpath>
     </template>
 
@@ -840,6 +857,65 @@
                     </div>
                 </div>
             </div>
+        </t>
+    </template>
+
+    <template id="portal_my_bookings_calendar" name="My Bookings Calendar">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Booking Calendar</t>
+            </t>
+            
+            <div class="d-flex justify-content-end mb-3 mt-3">
+                <div class="btn-group" role="group">
+                    <a href="/my/bookings" class="btn btn-outline-primary"><i class="fa fa-list"/> List</a>
+                    <a href="/my/bookings/calendar" class="btn btn-primary"><i class="fa fa-calendar"/> Calendar</a>
+                </div>
+            </div>
+
+            <t t-call-assets="web.fullcalendar_lib" t-css="false" />
+
+            <div class="card mt-4 mb-4 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div id="booking_calendar" style="min-height: 700px;" t-att-data-events="events_json"></div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    var calendarEl = document.getElementById('booking_calendar');
+                    if (!calendarEl) return;
+                    
+                    var eventsData = [];
+                    try {
+                        eventsData = JSON.parse(calendarEl.dataset.events || '[]');
+                    } catch (e) {
+                        console.error('Failed to parse events JSON', e);
+                    }
+                    
+                    if (typeof FullCalendar !== 'undefined') {
+                        var calendar = new FullCalendar.Calendar(calendarEl, {
+                            initialView: 'dayGridMonth',
+                            headerToolbar: {
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth,listMonth'
+                            },
+                            events: eventsData,
+                            eventClick: function(info) {
+                                if (info.event.url) {
+                                    window.location.href = info.event.url;
+                                    info.jsEvent.preventDefault();
+                                }
+                            }
+                        });
+                        calendar.render();
+                    } else {
+                        calendarEl.textContent = 'Error loading calendar library.';
+                    }
+                });
+            </script>
         </t>
     </template>
 </odoo>

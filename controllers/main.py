@@ -256,6 +256,36 @@ class CustomerPortal(http.Controller):
             'page_name': 'booking',
         })
 
+    @http.route(['/my/bookings/calendar'], type='http', auth="user", website=True)
+    def portal_my_bookings_calendar(self, **kw):
+        import json
+        import datetime
+        bookings = request.env['tour.booking'].sudo().search([('user_id', '=', request.env.user.id)])
+        
+        events = []
+        for b in bookings:
+            if b.date_start and b.date_end:
+                # FullCalendar end date is exclusive, so add 1 day to date_end
+                end_date = b.date_end + datetime.timedelta(days=1)
+                
+                # Color code based on payment status
+                color = '#28a745' if b.payment_status == 'confirmed' else '#ffc107'
+                
+                events.append({
+                    'title': f"{b.package_id.name}",
+                    'start': b.date_start.strftime('%Y-%m-%d'),
+                    'end': end_date.strftime('%Y-%m-%d'),
+                    'url': f'/my/bookings/{b.id}',
+                    'backgroundColor': color,
+                    'borderColor': color,
+                    'textColor': '#fff' if b.payment_status == 'confirmed' else '#000'
+                })
+                
+        return request.render('tour_package.portal_my_bookings_calendar', {
+            'events_json': json.dumps(events),
+            'page_name': 'booking',
+        })
+
     @http.route(['/my/bookings/<model("tour.booking"):booking>'], type='http', auth="user", website=True)
     def portal_my_booking_detail(self, booking, **kw):
         if booking.user_id != request.env.user:

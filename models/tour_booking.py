@@ -9,6 +9,8 @@ class TourBooking(models.Model):
     name = fields.Char(string='Booking Reference', required=True, copy=False, readonly=True, default=lambda self: 'New')
     calendar_id = fields.Many2one('tour.calendar', string='Tour Date', required=True, ondelete='restrict')
     package_id = fields.Many2one(related='calendar_id.package_id', string='Package', store=True)
+    date_start = fields.Date(related='calendar_id.date_start', string='Start Date', store=True)
+    date_end = fields.Date(related='calendar_id.date_end', string='End Date', store=True)
     
     partner_id = fields.Many2one('res.partner', string='Customer', required=True)
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)

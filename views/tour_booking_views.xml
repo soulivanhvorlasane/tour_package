@@ -90,9 +90,25 @@
         </field>
     </record>
 
+    <record id="view_tour_booking_calendar" model="ir.ui.view">
+        <field name="name">tour.booking.calendar</field>
+        <field name="model">tour.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Booking Timeline"
+                      date_start="date_start"
+                      date_stop="date_end"
+                      color="partner_id">
+                <field name="package_id"/>
+                <field name="partner_id"/>
+                <field name="seats"/>
+                <field name="payment_status"/>
+            </calendar>
+        </field>
+    </record>
+
     <record id="action_tour_booking" model="ir.actions.act_window">
         <field name="name">Tour Bookings</field>
         <field name="res_model">tour.booking</field>
-        <field name="view_mode">list,form,pivot</field>
+        <field name="view_mode">list,calendar,form,pivot</field>
     </record>
 </odoo>
