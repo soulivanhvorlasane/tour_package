@@ -64,9 +64,11 @@
                 }
                 .collage-main img { 
                     max-width: calc(100% - 4px); 
+                    max-height: calc(100% - 4px);
                     height: auto; 
+                    width: auto;
                     margin: 2px; 
-                    object-fit: cover; 
+                    object-fit: contain; 
                     border-radius: 6px;
                 }
                 .play-btn {
