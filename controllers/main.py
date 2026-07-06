@@ -278,7 +278,14 @@ class CustomerPortal(http.Controller):
                     'url': f'/my/bookings/{b.id}',
                     'backgroundColor': color,
                     'borderColor': color,
-                    'textColor': '#fff' if b.payment_status == 'confirmed' else '#000'
+                    'textColor': '#fff' if b.payment_status == 'confirmed' else '#000',
+                    'extendedProps': {
+                        'booking_id': b.id,
+                        'package_name': b.package_id.name,
+                        'date_range': f"{b.date_start.strftime('%Y-%m-%d')} to {b.date_end.strftime('%Y-%m-%d')}",
+                        'seats': b.seats,
+                        'status': dict(b.fields_get(allfields=['payment_status'])['payment_status']['selection']).get(b.payment_status, b.payment_status)
+                    }
                 })
                 
         return request.render('tour_package.portal_my_bookings_calendar', {

@@ -882,6 +882,28 @@
                 </div>
             </div>
 
+            <!-- Booking Details Modal -->
+            <div class="modal fade" id="calendarBookingModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Booking Details</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Package:</strong> <span id="modal_package_name"></span></p>
+                            <p><strong>Round Date:</strong> <span id="modal_date_range"></span></p>
+                            <p><strong>Seats:</strong> <span id="modal_seats"></span></p>
+                            <p><strong>Status:</strong> <span id="modal_status" class="badge"></span></p>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="#" id="modal_booking_link" class="btn btn-primary">View Full Booking</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <script type="text/javascript">
                 document.addEventListener('DOMContentLoaded', function() {
                     var calendarEl = document.getElementById('booking_calendar');
@@ -904,9 +926,27 @@
                             },
                             events: eventsData,
                             eventClick: function(info) {
-                                if (info.event.url) {
+                                info.jsEvent.preventDefault();
+                                
+                                var props = info.event.extendedProps;
+                                if (props) {
+                                    document.getElementById('modal_package_name').textContent = props.package_name;
+                                    document.getElementById('modal_date_range').textContent = props.date_range;
+                                    document.getElementById('modal_seats').textContent = props.seats;
+                                    
+                                    var statusBadge = document.getElementById('modal_status');
+                                    statusBadge.textContent = props.status;
+                                    if (props.status === 'Confirmed') {
+                                        statusBadge.className = 'badge bg-success';
+                                    } else {
+                                        statusBadge.className = 'badge bg-warning text-dark';
+                                    }
+                                    
+                                    document.getElementById('modal_booking_link').href = info.event.url;
+                                    
+                                    $('#calendarBookingModal').modal('show');
+                                } else if (info.event.url) {
                                     window.location.href = info.event.url;
-                                    info.jsEvent.preventDefault();
                                 }
                             }
                         });
