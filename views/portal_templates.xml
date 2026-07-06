@@ -54,19 +54,17 @@
                 }
                 .collage-main {
                     position: relative;
-                    height: 250px;
                     margin-bottom: 5px;
                     border-radius: 8px;
                     overflow: hidden;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    background-color: #f8f9fa;
                 }
                 .collage-main img { 
-                    max-width: calc(100% - 4px); 
-                    max-height: calc(100% - 4px);
+                    width: calc(100% - 4px);
                     height: auto; 
-                    width: auto;
                     margin: 2px; 
                     object-fit: contain; 
                     border-radius: 6px;
@@ -224,7 +222,6 @@
                     }
                     .collage-main {
                         height: auto !important;
-                        min-height: 200px;
                     }
                     .date-grid {
                         grid-template-columns: 1fr;
@@ -264,7 +261,7 @@
                             <div class="row g-0 align-items-stretch">
                                 <!-- Left Column: Image -->
                                 <div class="col-md-5 col-lg-6">
-                                    <div class="collage-main m-0" style="height: 350px;">
+                                    <div class="collage-main m-0">
                                         <t t-if="package.cover_image">
                                             <img t-attf-src="data:image/png;base64,#{package.cover_image}" alt="Tour Main Image" 
                                                  class="gallery-thumbnail" 
