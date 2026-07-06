@@ -8,10 +8,10 @@
                         <div class="col-md-4 mb-3">
                             <div class="card h-100">
                                 <t t-if="pkg.cover_image">
-                                    <img t-attf-src="data:image/png;base64,#{pkg.cover_image}" class="card-img-top" style="height: 220px; object-fit: cover; width: 100%;"/>
+                                    <img t-attf-src="data:image/png;base64,#{pkg.cover_image}" class="card-img-top" style="height: 220px; max-width: calc(100% - 4px); margin: 2px; object-fit: contain;"/>
                                 </t>
                                 <t t-else="">
-                                    <img src="/tour_package/static/images/default_cover.png" class="card-img-top" style="height: 220px; object-fit: cover; width: 100%;"/>
+                                    <img src="/tour_package/static/images/default_cover.png" class="card-img-top" style="height: 220px; max-width: calc(100% - 4px); margin: 2px; object-fit: contain;"/>
                                 </t>
                                 <div class="card-body">
                                     <h5 class="card-title"><t t-esc="pkg.name"/></h5>
