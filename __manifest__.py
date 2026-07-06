@@ -12,7 +12,7 @@
     """,
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
-    'depends': ['base', 'mail', 'website', 'portal', 'payment'],
+    'depends': ['base', 'mail', 'website', 'portal', 'payment', 'account'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

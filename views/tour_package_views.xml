@@ -26,6 +26,9 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Included Products" name="products">
+                            <field name="product_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                        </page>
                         <page string="Description" name="description">
                             <field name="description" widget="html"/>
                         </page>

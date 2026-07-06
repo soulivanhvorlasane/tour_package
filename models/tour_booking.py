@@ -57,6 +57,25 @@ class TourBooking(models.Model):
                 raise ValidationError("Number of seats must be strictly positive.")
             if record.calendar_id.remaining_seats < record.seats:
                 raise ValidationError("Not enough seats available.")
+            
+            # Collect product list from linked package
+            invoice_lines = []
+            if record.package_id.product_ids:
+                for product in record.package_id.product_ids:
+                    invoice_lines.append((0, 0, {
+                        'product_id': product.id,
+                        'quantity': record.seats,  # dynamic based on seats
+                        'price_unit': product.list_price,
+                    }))
+
+                # Create invoice automatically
+                invoice = self.env['account.move'].create({
+                    'move_type': 'out_invoice',
+                    'partner_id': record.partner_id.id,
+                    'invoice_date': fields.Date.today(),
+                    'invoice_line_ids': invoice_lines,
+                })
+
             record.state = 'confirmed'
             
             # Send confirmation email
