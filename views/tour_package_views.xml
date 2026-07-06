@@ -36,6 +36,18 @@
                                     <field name="price_subtotal"/>
                                 </list>
                             </field>
+                            <group col="12" class="oe_invoice_lines_tab">
+                                <group colspan="8">
+                                    <field name="terms_and_conditions" nolabel="1" placeholder="Terms and conditions..."/>
+                                </group>
+                                <group colspan="4">
+                                    <group class="oe_subtotal_footer">
+                                        <field name="untaxed_amount" readonly="1"/>
+                                        <field name="tax_amount" readonly="1"/>
+                                        <field name="total_amount" class="oe_subtotal_footer_separator" readonly="1"/>
+                                    </group>
+                                </group>
+                            </group>
                         </page>
                         <page string="Description" name="description">
                             <field name="description" widget="html"/>

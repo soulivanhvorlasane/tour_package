@@ -28,6 +28,20 @@ class TourPackage(models.Model):
         string='Included Products'
     )
     
+    untaxed_amount = fields.Float(string="Untaxed Amount", compute="_compute_amounts", store=True)
+    tax_amount = fields.Float(string="Tax 15%", compute="_compute_amounts", store=True)
+    total_amount = fields.Float(string="Total", compute="_compute_amounts", store=True)
+    terms_and_conditions = fields.Html(string="Terms and Conditions")
+
+    @api.depends("line_ids.price_subtotal")
+    def _compute_amounts(self):
+        for record in self:
+            untaxed = sum(line.price_subtotal for line in record.line_ids)
+            tax = untaxed * 0.15
+            record.untaxed_amount = untaxed
+            record.tax_amount = tax
+            record.total_amount = untaxed + tax
+    
     calendar_ids = fields.One2many('tour.calendar', 'package_id', string='Availabilities')
     
     # Photo Gallery and Video
