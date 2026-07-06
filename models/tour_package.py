@@ -49,6 +49,14 @@ class TourPackage(models.Model):
         for record in records:
             if record.image_ids:
                 record.image_ids.sudo().write({'public': True})
+            if record.cover_image:
+                attachment = self.env['ir.attachment'].search([
+                    ('res_model', '=', self._name),
+                    ('res_field', '=', 'cover_image'),
+                    ('res_id', '=', record.id)
+                ], limit=1)
+                if attachment:
+                    attachment.sudo().write({'public': True})
         return records
 
     def write(self, vals):
@@ -57,6 +65,7 @@ class TourPackage(models.Model):
             for record in self:
                 record.image_ids.sudo().write({'public': True})
         
+        # Ensure cover image is public if we need it
         if 'cover_image' in vals:
             for record in self:
                 attachment = self.env['ir.attachment'].search([
@@ -65,7 +74,7 @@ class TourPackage(models.Model):
                     ('res_id', '=', record.id)
                 ], limit=1)
                 if attachment:
-                    attachment.unlink()
+                    attachment.sudo().write({'public': True})
         return res
 
 
