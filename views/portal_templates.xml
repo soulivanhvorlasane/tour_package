@@ -212,6 +212,15 @@
                     
                     <h1 class="text-center mb-4"><t t-esc="package.name"/></h1>
                     
+                    <div class="tour-card-container mb-4" t-if="package.embed_video_url">
+                        <div class="tour-card p-4">
+                            <h3 class="border-bottom pb-2 mb-3">Tour Video</h3>
+                            <div class="ratio ratio-16x9">
+                                <iframe t-att-src="package.embed_video_url + '?autoplay=1&amp;mute=1'" allow="autoplay; encrypted-media" allowfullscreen="1" frameborder="0" style="width: 100%; min-height: 350px;"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="tour-card-container mb-4">
                         <div class="tour-card p-0 overflow-hidden">
                             <div class="row g-0 align-items-stretch">
@@ -242,15 +251,6 @@
                                         <div t-raw="package.description"/>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="tour-card-container mt-4" t-if="package.embed_video_url">
-                        <div class="tour-card p-4">
-                            <h3 class="border-bottom pb-2 mb-3">Tour Video</h3>
-                            <div class="ratio ratio-16x9">
-                                <iframe t-att-src="package.embed_video_url + '?autoplay=1&amp;mute=1'" allow="autoplay; encrypted-media" allowfullscreen="1" frameborder="0" style="width: 100%; min-height: 350px;"></iframe>
                             </div>
                         </div>
                     </div>
