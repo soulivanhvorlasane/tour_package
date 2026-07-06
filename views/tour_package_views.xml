@@ -27,7 +27,15 @@
                     </group>
                     <notebook>
                         <page string="Included Products" name="products">
-                            <field name="product_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Description" name="description">
                             <field name="description" widget="html"/>

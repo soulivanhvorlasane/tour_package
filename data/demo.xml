@@ -23,7 +23,11 @@
     <field name="name">Laos Adventure</field>
     <field name="description">Explore Vientiane and Luang Prabang</field>
     <field name="price">500</field>
-    <field name="product_ids" eval="[(6, 0, [ref('demo_product_car_fee'), ref('demo_product_room_fee'), ref('demo_product_travel_fee')])]"/>
+    <field name="line_ids" eval="[
+      (0, 0, {'product_id': ref('demo_product_car_fee'), 'name': 'Car Fee', 'quantity': 1, 'price_unit': 100}),
+      (0, 0, {'product_id': ref('demo_product_room_fee'), 'name': 'Room Fee', 'quantity': 1, 'price_unit': 500}),
+      (0, 0, {'product_id': ref('demo_product_travel_fee'), 'name': 'Travel Fee', 'quantity': 1, 'price_unit': 600})
+    ]"/>
   </record>
   <record id="tour_package_demo2" model="tour.package">
     <field name="name">Mekong Cruise</field>

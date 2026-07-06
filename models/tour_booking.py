@@ -60,12 +60,13 @@ class TourBooking(models.Model):
             
             # Collect product list from linked package
             invoice_lines = []
-            if record.package_id.product_ids:
-                for product in record.package_id.product_ids:
+            if record.package_id.line_ids:
+                for line in record.package_id.line_ids:
                     invoice_lines.append((0, 0, {
-                        'product_id': product.id,
-                        'quantity': record.seats,  # dynamic based on seats
-                        'price_unit': product.list_price,
+                        'product_id': line.product_id.id,
+                        'name': line.name,
+                        'quantity': line.quantity * record.seats,  # dynamic based on seats and line quantity
+                        'price_unit': line.price_unit,
                     }))
 
                 # Create invoice automatically

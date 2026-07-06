@@ -22,11 +22,9 @@ class TourPackage(models.Model):
     cover_image = fields.Binary(string='Cover Image', attachment=True)
     
     # Link products such as car fee, room fee, travel fee
-    product_ids = fields.Many2many(
-        'product.product',
-        'tour_package_product_rel',
+    line_ids = fields.One2many(
+        'tour.package.line',
         'package_id',
-        'product_id',
         string='Included Products'
     )
     
