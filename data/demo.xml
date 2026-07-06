@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <!-- Demo Products for Fees -->
+  <record id="demo_product_car_fee" model="product.product">
+    <field name="name">Car Fee</field>
+    <field name="type">service</field>
+    <field name="list_price">100.0</field>
+  </record>
+  
+  <record id="demo_product_room_fee" model="product.product">
+    <field name="name">Room Fee</field>
+    <field name="type">service</field>
+    <field name="list_price">500.0</field>
+  </record>
+
+  <record id="demo_product_travel_fee" model="product.product">
+    <field name="name">Travel Fee</field>
+    <field name="type">service</field>
+    <field name="list_price">600.0</field>
+  </record>
+
   <record id="tour_package_demo1" model="tour.package">
     <field name="name">Laos Adventure</field>
     <field name="description">Explore Vientiane and Luang Prabang</field>
     <field name="price">500</field>
+    <field name="product_ids" eval="[(6, 0, [ref('demo_product_car_fee'), ref('demo_product_room_fee'), ref('demo_product_travel_fee')])]"/>
   </record>
   <record id="tour_package_demo2" model="tour.package">
     <field name="name">Mekong Cruise</field>
