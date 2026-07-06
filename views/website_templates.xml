@@ -2,7 +2,13 @@
 <odoo>
     <template id="website_tour_packages" name="Tour Packages">
         <t t-call="website.layout">
-            <section class="container mt-4">
+            <section class="container mt-5 mb-5">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bold text-dark mb-3">Explore Our Tour Packages</h1>
+                    <p class="text-muted lead" style="max-width: 700px; margin: 0 auto;">
+                        Discover breathtaking destinations, unforgettable adventures, and hand-picked experiences designed just for you. Book your next journey today!
+                    </p>
+                </div>
                 <div class="row">
                     <t t-foreach="packages" t-as="pkg">
                         <div class="col-md-4 mb-3">
