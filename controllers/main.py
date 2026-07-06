@@ -61,19 +61,189 @@ class TourPackageController(http.Controller):
         if not calendar.exists() or calendar.state != 'open' or calendar.remaining_seats < seats:
             return request.redirect(f'/packages/{calendar.package_id.id}/book?error=unavailable')
 
-        booking = request.env['tour.booking'].sudo().create({
-            'calendar_id': calendar.id,
-            'partner_id': user.partner_id.id,
-            'user_id': user.id,
-            'seats': seats,
-        })
+        from odoo.exceptions import ValidationError, RedirectWarning
         
-        from odoo.addons.payment import utils as payment_utils
-        access_token = payment_utils.generate_access_token(booking.partner_id.id, booking.total_price, request.env.company.currency_id.id)
-        
-        payment_url = f'/payment/pay?reference={booking.name}&amount={booking.total_price}&currency_id={request.env.company.currency_id.id}&partner_id={booking.partner_id.id}&access_token={access_token}'
-        return request.redirect(payment_url)
+        # Check for duplicates BEFORE creating to avoid database constraint exceptions
+        duplicate = request.env['tour.booking'].sudo().search([
+            ('package_id', '=', calendar.package_id.id),
+            ('partner_id', '=', user.partner_id.id),
+            ('calendar_id', '=', calendar.id),
+            ('state', '!=', 'cancelled')
+        ], limit=1)
+        if duplicate:
+            return request.redirect(f'/packages/{calendar.package_id.id}/book?error=duplicate')
 
+        request.session['pending_payment'] = {
+            'calendar_id': calendar.id,
+            'seats': seats,
+        }
+        return request.redirect('/packages/book/payment')
+
+    @http.route(['/packages/book/merge_seats'], type='http', auth="user", website=True, methods=['POST'])
+    def tour_merge_seats(self, **post):
+        calendar_id = int(post.get('calendar_id', 0))
+        seats = int(post.get('seats', 1))
+        
+        if not calendar_id:
+            return request.redirect('/packages')
+            
+        calendar = request.env['tour.calendar'].sudo().browse(calendar_id)
+        if not calendar.exists() or calendar.state != 'open' or calendar.remaining_seats < seats:
+            return request.redirect(f'/packages/{calendar.package_id.id}/book?error=unavailable')
+            
+        user = request.env.user
+        existing_booking = request.env['tour.booking'].sudo().search([
+            ('package_id', '=', calendar.package_id.id),
+            ('partner_id', '=', user.partner_id.id),
+            ('calendar_id', '=', calendar.id),
+            ('state', '!=', 'cancelled')
+        ], limit=1)
+        
+        if existing_booking:
+            request.session['pending_payment'] = {
+                'calendar_id': calendar.id,
+                'seats': seats,
+                'existing_booking_id': existing_booking.id
+            }
+            return request.redirect('/packages/book/payment')
+            
+        # Fallback if no existing booking found
+        return request.redirect(f'/packages/{calendar.package_id.id}/book?error=validation')
+
+    @http.route(['/packages/book/check_duplicate'], type='http', auth="user", website=True, csrf=False, methods=['POST'])
+    def check_duplicate_booking(self, calendar_id=None, **kw):
+        import json
+        if not calendar_id:
+            try:
+                data = json.loads(request.httprequest.data)
+                calendar_id = data.get('params', {}).get('calendar_id')
+            except:
+                pass
+                
+        if not calendar_id:
+            return request.make_response(json.dumps({'result': {'is_duplicate': False}}), headers=[('Content-Type', 'application/json')])
+
+        calendar = request.env['tour.calendar'].sudo().browse(int(calendar_id))
+        user = request.env.user
+        duplicate = request.env['tour.booking'].sudo().search([
+            ('package_id', '=', calendar.package_id.id),
+            ('partner_id', '=', user.partner_id.id),
+            ('calendar_id', '=', calendar.id),
+            ('state', '!=', 'cancelled')
+        ], limit=1)
+        
+        response_data = {
+            "jsonrpc": "2.0",
+            "id": None,
+            "result": {
+                "is_duplicate": bool(duplicate)
+            }
+        }
+        return request.make_response(json.dumps(response_data), headers=[('Content-Type', 'application/json')])
+
+    @http.route(['/packages/book/payment'], type='http', auth="user", website=True)
+    def booking_payment_page(self, **kw):
+        pending = request.session.get('pending_payment')
+        if not pending:
+            return request.redirect('/packages')
+            
+        calendar = request.env['tour.calendar'].sudo().browse(pending['calendar_id'])
+        if not calendar.exists():
+            return request.redirect('/packages')
+            
+        seats = pending['seats']
+        total_price = seats * (calendar.package_id.price or 0.0)
+        
+        return request.render('tour_package.booking_payment_page', {
+            'calendar': calendar,
+            'seats': seats,
+            'total_price': total_price,
+            'existing_booking_id': pending.get('existing_booking_id'),
+        })
+
+    @http.route(['/packages/book/payment/submit'], type='http', auth="user", website=True, methods=['POST'])
+    def booking_payment_submit(self, **post):
+        pending = request.session.get('pending_payment')
+        if not pending:
+            return request.redirect('/packages')
+            
+        calendar = request.env['tour.calendar'].sudo().browse(pending['calendar_id'])
+        seats = pending['seats']
+        existing_booking_id = pending.get('existing_booking_id')
+        user = request.env.user
+        
+        # Check duplicate one last time if not merging
+        if not existing_booking_id:
+            duplicate = request.env['tour.booking'].sudo().search([
+                ('package_id', '=', calendar.package_id.id),
+                ('partner_id', '=', user.partner_id.id),
+                ('calendar_id', '=', calendar.id),
+                ('state', '!=', 'cancelled')
+            ], limit=1)
+            if duplicate:
+                return request.redirect(f'/packages/{calendar.package_id.id}/book?error=duplicate')
+                
+        payment_data = {
+            'payment_status': 'pending',
+        }
+        
+        payment_method = post.get('payment_method')
+        if payment_method == 'auto':
+            payment_data.update({
+                'visa_card_name': post.get('visa_card_name'),
+                'visa_card_number': post.get('visa_card_number'),
+                'visa_expiry': post.get('visa_expiry'),
+                'visa_cvv': post.get('visa_cvv'),
+            })
+        else:
+            import base64
+            transaction_file = post.get('transaction_file')
+            file_content = False
+            filename = ''
+            if transaction_file:
+                file_content = base64.b64encode(transaction_file.read())
+                filename = transaction_file.filename
+                
+            payment_data.update({
+                'visa_account_name': post.get('visa_account_name'),
+                'visa_account_number': post.get('visa_account_number'),
+                'payment_date': post.get('payment_date'),
+                'payment_time': float(post.get('payment_time', 0).replace(':', '.')) if post.get('payment_time') else 0.0,
+                'transaction_file': file_content,
+                'transaction_filename': filename,
+            })
+            
+        if existing_booking_id:
+            booking = request.env['tour.booking'].sudo().browse(existing_booking_id)
+            payment_data['seats'] = booking.seats + seats
+            booking.sudo().write(payment_data)
+        else:
+            payment_data.update({
+                'calendar_id': calendar.id,
+                'partner_id': user.partner_id.id,
+                'user_id': user.id,
+                'seats': seats,
+            })
+            request.env['tour.booking'].sudo().create(payment_data)
+            
+        request.session.pop('pending_payment', None)
+        return request.redirect('/my/bookings')
+
+
+    @http.route(['/qrcode/visa/<string:account_number>'], type='http', auth='public', website=True)
+    def generate_qr_code(self, account_number, **kwargs):
+        import qrcode
+        import io
+        
+        qr = qrcode.make(account_number)
+        img_byte_arr = io.BytesIO()
+        qr.save(img_byte_arr, format='PNG')
+        img_byte_arr.seek(0)
+        
+        return request.make_response(
+            img_byte_arr.read(),
+            headers=[('Content-Type', 'image/png')]
+        )
 
 
 class CustomerPortal(http.Controller):

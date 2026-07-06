@@ -8,8 +8,8 @@
     <menuitem id="menu_tour_bookings" name="Bookings" parent="menu_tour_root" sequence="20"/>
 
     <!-- Actions -->
-    <menuitem id="menu_tour_package_action" name="Packages" parent="menu_tour_management" action="action_tour_package" sequence="10"/>
-    <menuitem id="menu_tour_calendar_action" name="Calendar" parent="menu_tour_management" action="action_tour_calendar" sequence="20"/>
+    <menuitem id="menu_tour_package_action" name="Packages" parent="menu_tour_configuration" action="action_tour_package" sequence="10"/>
+    <menuitem id="menu_tour_calendar_action" name="Calendar" parent="menu_tour_configuration" action="action_tour_calendar" sequence="20"/>
     <menuitem id="menu_tour_booking_action" name="All Bookings" parent="menu_tour_bookings" action="action_tour_booking" sequence="10"/>
 
     <menuitem id="menu_tour_package_website"
@@ -28,5 +28,5 @@
 
     <!-- Configuration Menu -->
     <menuitem id="menu_tour_configuration" name="Configuration" parent="menu_tour_root" sequence="100"/>
-    <menuitem id="menu_tour_products" name="Products" parent="menu_tour_configuration" action="action_tour_package_products" sequence="10"/>
+    <menuitem id="menu_tour_products" name="Products" parent="menu_tour_root" action="action_tour_package_products" sequence="30"/>
 </odoo>

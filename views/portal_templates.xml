@@ -315,8 +315,34 @@
                                     The selected date does not have enough available seats.
                                 </div>
                             </t>
+                            <t t-if="request.params.get('error') == 'duplicate'">
+                                <!-- Duplicate Booking Modal -->
+                                <div class="modal fade show d-block" id="duplicateBookingModal" tabindex="-1" aria-labelledby="duplicateBookingModalLabel" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow">
+                                            <div class="modal-header bg-warning text-dark border-0">
+                                                <h5 class="modal-title" id="duplicateBookingModalLabel"><i class="fa fa-exclamation-triangle me-2"></i>Duplicate Booking</h5>
+                                                <button type="button" class="btn-close" onclick="document.getElementById('duplicateBookingModal').remove()" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body p-4 text-center">
+                                                <i class="fa fa-info-circle text-warning mb-3" style="font-size: 3rem;"></i>
+                                                <h5>Action Restricted</h5>
+                                                <p class="mb-0">You have already booked this package for the selected date!</p>
+                                            </div>
+                                            <div class="modal-footer border-0 justify-content-center pb-4">
+                                                <button type="button" class="btn btn-warning px-5" onclick="document.getElementById('duplicateBookingModal').remove()">OK</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="request.params.get('error') == 'validation'">
+                                <div class="alert alert-danger mx-3 mt-3">
+                                    Validation error while booking. Please try again or contact support.
+                                </div>
+                            </t>
 
-                            <form action="/packages/book/confirm" method="post" t-if="calendars" id="booking_form">
+                            <form action="/packages/book/confirm" method="post" enctype="multipart/form-data" t-if="calendars" id="booking_form">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 
                                 <h3 class="border-bottom pb-2 mb-3">Book Your Tour</h3>
@@ -370,7 +396,86 @@
                                     </div>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-book w-100 mt-4">Confirm &amp; Book Now</button>
+                                <button type="button" class="btn btn-book w-100 mt-4" id="btn-confirm-book">Confirm &amp; Book Now</button>
+                                
+                                <!-- Duplicate Warning Modal -->
+                                <div class="modal fade" id="duplicateModal" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title"><i class="fa fa-exclamation-triangle me-2"></i>Duplicate Booking</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center p-4">
+                                                <p class="mb-0 fs-5">You have already booked this package for the same round date!</p>
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-primary" id="btn-merge-seats">Add Seats to Existing Booking</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function() {
+                                        var btnConfirm = document.getElementById('btn-confirm-book');
+                                        var btnMerge = document.getElementById('btn-merge-seats');
+                                        var form = document.getElementById('booking_form');
+                                        
+                                        // Check for error=duplicate in URL
+                                        if (window.location.search.includes("error=duplicate")) {
+                                            $('#duplicateModal').modal('show');
+                                            // Clean URL so refresh doesn't pop it again
+                                            const url = new URL(window.location.href);
+                                            url.searchParams.delete('error');
+                                            window.history.replaceState({}, document.title, url.toString());
+                                        }
+
+                                        if (btnMerge &amp;&amp; form) {
+                                            btnMerge.addEventListener('click', function(e) {
+                                                form.action = '/packages/book/merge_seats';
+                                                form.submit();
+                                            });
+                                        }
+
+                                        if (btnConfirm &amp;&amp; form) {
+                                            btnConfirm.addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                var calendarId = form.querySelector('input[name="calendar_id"]:checked');
+                                                if (!calendarId) {
+                                                    form.reportValidity();
+                                                    return;
+                                                }
+                                                fetch('/packages/book/check_duplicate', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                    },
+                                                    body: JSON.stringify({
+                                                        jsonrpc: "2.0",
+                                                        method: "call",
+                                                        params: {
+                                                            calendar_id: calendarId.value
+                                                        }
+                                                    })
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.result &amp;&amp; data.result.is_duplicate) {
+                                                        $('#duplicateModal').modal('show');
+                                                    } else {
+                                                        form.submit();
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                    form.submit();
+                                                });
+                                            });
+                                        }
+                                    });
+                                </script>
                             </form>
                             
                             <div t-else="" class="alert alert-warning mt-4 mx-3">
@@ -617,5 +722,124 @@
                 <t t-set="placeholder_count" t-value="'booking_count'"/>
             </t>
         </xpath>
+    </template>
+
+    <!-- Payment Page Template -->
+    <template id="booking_payment_page" name="Tour Booking Payment">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-primary text-white text-center py-3">
+                                <h4 class="mb-0">Complete Your Payment</h4>
+                            </div>
+                            <div class="card-body p-0">
+                                <form action="/packages/book/payment/submit" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="bg-light p-4 border-bottom text-center">
+                                        <h5 class="mb-2">Total Amount Due</h5>
+                                        <h2 class="text-primary fw-bold mb-0">
+                                            <span t-esc="total_price" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        </h2>
+                                        <p class="text-muted small mb-0 mt-2">For <span t-esc="seats"/> seat(s) on <span t-esc="calendar.package_id.name"/></p>
+                                    </div>
+                                    <ul class="nav nav-tabs nav-justified" id="paymentTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active py-3 fw-bold" id="auto-tab" data-bs-toggle="tab" data-bs-target="#autoPayment" type="button" role="tab" aria-controls="autoPayment" aria-selected="true">
+                                                <i class="fa fa-credit-card me-2"></i>Option A: Auto Payment (Visa)
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link py-3 fw-bold" id="qr-tab" data-bs-toggle="tab" data-bs-target="#qrPayment" type="button" role="tab" aria-controls="qrPayment" aria-selected="false">
+                                                <i class="fa fa-qrcode me-2"></i>Option B: QR Code Scan
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content p-4" id="paymentTabContent">
+                                        <!-- Option A: Auto Payment -->
+                                        <div class="tab-pane fade show active" id="autoPayment" role="tabpanel" aria-labelledby="auto-tab">
+                                            <input type="hidden" name="payment_method" value="auto" id="paymentMethodInput"/>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Cardholder Name</label>
+                                                <input type="text" name="visa_card_name" class="form-control" placeholder="e.g. John Doe"/>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Card Number</label>
+                                                <input type="text" name="visa_card_number" class="form-control" placeholder="**** **** **** 1234"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 mb-3">
+                                                    <label class="form-label fw-bold">Expiry Date</label>
+                                                    <input type="text" name="visa_expiry" class="form-control" placeholder="MM/YY"/>
+                                                </div>
+                                                <div class="col-6 mb-3">
+                                                    <label class="form-label fw-bold">CVV</label>
+                                                    <input type="password" name="visa_cvv" class="form-control" placeholder="***"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Option B: QR Code Payment -->
+                                        <div class="tab-pane fade" id="qrPayment" role="tabpanel" aria-labelledby="qr-tab">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center border-end">
+                                                    <h6>Visa QR Code</h6>
+                                                    <img src="/qrcode/visa/4111111111111111" alt="QR Code" class="img-fluid border p-2 mb-2" style="max-width: 200px;"/>
+                                                    <p class="text-muted small">Scan to pay</p>
+                                                </div>
+                                                <div class="col-md-6 text-start">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Visa Account Name</label>
+                                                        <input type="text" name="visa_account_name" class="form-control" placeholder="e.g. John Doe"/>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Visa Account Number</label>
+                                                        <input type="text" name="visa_account_number" class="form-control" placeholder="**** **** **** 1234"/>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Upload Transaction File</label>
+                                                        <input type="file" name="transaction_file" class="form-control" accept="image/*,.pdf"/>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label fw-bold">Payment Date</label>
+                                                            <input type="date" name="payment_date" class="form-control"/>
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label fw-bold">Payment Time</label>
+                                                            <input type="time" name="payment_time" class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-footer bg-light p-4 text-center">
+                                        <a href="/tour" class="btn btn-secondary btn-lg px-4 me-2 shadow-sm">Cancel</a>
+                                        <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">Confirm Payment</button>
+                                    </div>
+                                </form>
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function() {
+                                        var autoTab = document.getElementById('auto-tab');
+                                        var qrTab = document.getElementById('qr-tab');
+                                        var paymentMethodInput = document.getElementById('paymentMethodInput');
+                                        if (autoTab &amp;&amp; qrTab) {
+                                            autoTab.addEventListener('shown.bs.tab', function (e) {
+                                                paymentMethodInput.value = 'auto';
+                                            });
+                                            qrTab.addEventListener('shown.bs.tab', function (e) {
+                                                paymentMethodInput.value = 'qr';
+                                            });
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
     </template>
 </odoo>

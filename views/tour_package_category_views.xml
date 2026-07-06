@@ -43,7 +43,7 @@
 
     <menuitem id="menu_tour_package_category" 
               name="Categories"
-              parent="menu_tour_root" 
+              parent="menu_tour_configuration" 
               action="action_tour_package_category"
               sequence="20"/>
 </odoo>

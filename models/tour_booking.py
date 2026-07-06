@@ -16,6 +16,26 @@ class TourBooking(models.Model):
     seats = fields.Integer(string='Number of Seats', required=True, default=1)
     total_price = fields.Float(string='Total Price', compute='_compute_total_price', store=True)
     
+    payment_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed')
+    ], default='draft', string='Payment Status', tracking=True)
+
+    # Option A: Auto payment with Visa card
+    visa_card_number = fields.Char(string="Visa Card Number")
+    visa_card_name = fields.Char(string="Cardholder Name")
+    visa_expiry = fields.Char(string="Expiry Date")
+    visa_cvv = fields.Char(string="CVV")
+
+    # Option B: QR code payment
+    visa_account_name = fields.Char(string='Visa Account Name')
+    visa_account_number = fields.Char(string='Visa Account Number')
+    transaction_file = fields.Binary(string='Transaction Capture File')
+    transaction_filename = fields.Char(string='Transaction File Name')
+    payment_date = fields.Date(string='Payment Date')
+    payment_time = fields.Float(string='Payment Time (HH:MM)')
+    
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -50,6 +70,36 @@ class TourBooking(models.Model):
                 
                 if booked_seats > record.calendar_id.available_seats:
                     raise ValidationError("Not enough seats available for this tour date.")
+
+    @api.constrains('package_id', 'partner_id', 'calendar_id')
+    def _check_duplicate_booking(self):
+        for record in self:
+            duplicate = self.search([
+                ('id', '!=', record.id),
+                ('package_id', '=', record.calendar_id.package_id.id),
+                ('partner_id', '=', record.partner_id.id),
+                ('calendar_id', '=', record.calendar_id.id),
+                ('state', '!=', 'cancelled')
+            ], limit=1)
+            if duplicate:
+                # If created from backend, use RedirectWarning to show merge wizard
+                # Note: this requires the wizard action to exist
+                action = self.env.ref('tour_package.action_tour_booking_merge_wizard', raise_if_not_found=False)
+                if action:
+                    msg = "This customer has already booked this package for the same round date."
+                    from odoo.exceptions import RedirectWarning
+                    raise RedirectWarning(
+                        msg, 
+                        action.id, 
+                        "Add Seats to Existing Booking", 
+                        additional_context={
+                            'default_existing_booking_id': duplicate.id,
+                            'default_new_seats': record.seats,
+                        }
+                    )
+                else:
+                    from odoo.exceptions import ValidationError
+                    raise ValidationError("This customer has already booked this package for the same round date.")
 
     def action_confirm(self):
         for record in self:

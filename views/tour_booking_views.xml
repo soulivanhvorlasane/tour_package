@@ -26,8 +26,35 @@
                         <group>
                             <field name="seats"/>
                             <field name="total_price"/>
+                            <field name="payment_status" widget="badge" decoration-success="payment_status == 'confirmed'" decoration-warning="payment_status == 'pending'" decoration-info="payment_status == 'draft'"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Payment Details" name="payment_details">
+                            <group string="Option A: Auto Payment (Card)">
+                                <group>
+                                    <field name="visa_card_name"/>
+                                    <field name="visa_card_number"/>
+                                </group>
+                                <group>
+                                    <field name="visa_expiry"/>
+                                    <field name="visa_cvv"/>
+                                </group>
+                            </group>
+                            <group string="Option B: QR Code Scan (Manual)">
+                                <group>
+                                    <field name="visa_account_name"/>
+                                    <field name="visa_account_number"/>
+                                </group>
+                                <group>
+                                    <field name="payment_date"/>
+                                    <field name="payment_time" widget="float_time"/>
+                                    <field name="transaction_file" filename="transaction_filename" widget="binary"/>
+                                    <field name="transaction_filename" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
             </form>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tour_booking_merge_wizard_form" model="ir.ui.view">
+        <field name="name">tour.booking.merge.wizard.form</field>
+        <field name="model">tour.booking.merge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Merge Duplicate Booking">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Duplicate Booking Detected!</strong><br/>
+                        This customer has already booked this package for the same round date.
+                    </div>
+                    <group>
+                        <field name="existing_booking_id" readonly="1" options="{'no_open': True}"/>
+                        <field name="new_seats" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_merge_seats" string="Add Seats to Existing Booking" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tour_booking_merge_wizard" model="ir.actions.act_window">
+        <field name="name">Merge Duplicate Booking</field>
+        <field name="res_model">tour.booking.merge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

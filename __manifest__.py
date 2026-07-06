@@ -26,6 +26,7 @@
         'views/menu_views.xml',
         'views/portal_templates.xml',
         'views/website_templates.xml',
+        'wizard/tour_booking_merge_wizard_views.xml',
         'reports/booking_report_views.xml',
         'reports/booking_report_templates.xml',
     ],
