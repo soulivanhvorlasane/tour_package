@@ -205,6 +205,33 @@
                     background: linear-gradient(to bottom, #ffa500, #ff7f00);
                     color: white;
                 }
+
+                /* Mobile Layout Fixes */
+                @media (max-width: 768px) {
+                    .tour-card {
+                        padding: 15px !important;
+                    }
+                    .collage-main {
+                        height: auto !important;
+                        min-height: 200px;
+                    }
+                    .date-grid {
+                        grid-template-columns: 1fr;
+                        margin: 0 5px 25px;
+                    }
+                    .legend {
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    .container-fluid {
+                        padding-left: 10px !important;
+                        padding-right: 10px !important;
+                    }
+                    .p-4 {
+                        padding: 15px !important;
+                    }
+                }
             </style>
             
             <div id="wrap">
@@ -216,7 +243,7 @@
                         <div class="tour-card p-4">
                             <h3 class="border-bottom pb-2 mb-3">Tour Video</h3>
                             <div class="ratio ratio-16x9">
-                                <iframe t-att-src="package.embed_video_url + '?autoplay=1&amp;mute=1'" allow="autoplay; encrypted-media" allowfullscreen="1" frameborder="0" style="width: 100%; min-height: 350px;"></iframe>
+                                <iframe t-att-src="package.embed_video_url + '?autoplay=1&amp;mute=1'" allow="autoplay; encrypted-media" allowfullscreen="1" frameborder="0"></iframe>
                             </div>
                         </div>
                     </div>
