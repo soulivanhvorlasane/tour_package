@@ -43,7 +43,20 @@ class TourPackage(models.Model):
             record.start_date = min(starts) if starts else False
             record.end_date = max(ends) if ends else False
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            if record.image_ids:
+                record.image_ids.sudo().write({'public': True})
+        return records
+
     def write(self, vals):
+        res = super().write(vals)
+        if 'image_ids' in vals:
+            for record in self:
+                record.image_ids.sudo().write({'public': True})
+        
         if 'cover_image' in vals:
             for record in self:
                 attachment = self.env['ir.attachment'].search([
@@ -53,7 +66,7 @@ class TourPackage(models.Model):
                 ], limit=1)
                 if attachment:
                     attachment.unlink()
-        return super(TourPackage, self).write(vals)
+        return res
 
 
 
