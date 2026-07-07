@@ -52,8 +52,8 @@ class TourPackage(models.Model):
 
     active = fields.Boolean(default=True)
 
-    start_date = fields.Date(string='Start Date', compute='_compute_dates', store=False)
-    end_date = fields.Date(string='End Date', compute='_compute_dates', store=False)
+    start_date = fields.Date(string='Start Date', compute='_compute_dates', store=True)
+    end_date = fields.Date(string='End Date', compute='_compute_dates', store=True)
     availability_status = fields.Char(string='Status', compute='_compute_availability_status', store=False)
 
     @api.depends('calendar_ids.date_start', 'calendar_ids.date_end')
