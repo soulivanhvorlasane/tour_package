@@ -127,7 +127,7 @@
     <!-- Calendar View -->
     <record id="view_tour_package_calendar" model="ir.ui.view">
         <field name="name">tour.package.calendar</field>
-        <field name="res_model">tour.package</field>
+        <field name="model">tour.package</field>
         <field name="arch" type="xml">
             <calendar string="Tour Packages" date_start="start_date" date_stop="end_date" color="category_id" mode="month">
                 <field name="name"/>
