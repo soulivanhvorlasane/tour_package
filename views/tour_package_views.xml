@@ -132,7 +132,7 @@
             <calendar string="Tour Packages" date_start="start_date" date_stop="end_date" color="category_id" mode="month">
                 <field name="name"/>
                 <field name="category_id"/>
-                <field name="price_per_person"/>
+                <field name="price"/>
             </calendar>
         </field>
     </record>
