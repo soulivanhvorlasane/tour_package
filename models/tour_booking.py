@@ -21,8 +21,11 @@ class TourBooking(models.Model):
     payment_status = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending'),
-        ('confirmed', 'Confirmed')
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
     ], default='draft', string='Payment Status', tracking=True)
+
+    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)
 
     # Option A: Auto payment with Visa card
     visa_card_number = fields.Char(string="Visa Card Number")
@@ -127,8 +130,11 @@ class TourBooking(models.Model):
                     'move_type': 'out_invoice',
                     'partner_id': record.partner_id.id,
                     'invoice_date': fields.Date.today(),
+                    'invoice_origin': record.name,
+                    'ref': f"Booking for {record.package_id.name}",
                     'invoice_line_ids': invoice_lines,
                 })
+                record.invoice_id = invoice.id
 
             record.state = 'confirmed'
             
@@ -145,3 +151,14 @@ class TourBooking(models.Model):
             template = self.env.ref('tour_package.email_template_tour_booking_cancelled', raise_if_not_found=False)
             if template:
                 template.send_mail(record.id, force_send=True)
+
+    def action_view_invoice(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Invoice',
+            'view_mode': 'form',
+            'res_model': 'account.move',
+            'res_id': self.invoice_id.id,
+            'context': "{'create': False}"
+        }

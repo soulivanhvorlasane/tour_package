@@ -11,6 +11,14 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
+                    <field name="invoice_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="not invoice_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name"/>
