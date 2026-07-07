@@ -50,7 +50,7 @@
                                 <group>
                                     <field name="payment_date"/>
                                     <field name="payment_time" widget="float_time"/>
-                                    <field name="transaction_file" widget="image" options="{'size': [300, 300]}" readonly="1"/>
+                                    <field name="transaction_file" widget="image" options="{'size': [100, 100], 'zoom': true}" readonly="1"/>
                                     <field name="transaction_filename" invisible="1"/>
                                 </group>
                             </group>
