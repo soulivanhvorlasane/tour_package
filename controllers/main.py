@@ -207,6 +207,7 @@ class TourPackageController(http.Controller):
             payment_data.update({
                 'visa_account_name': post.get('visa_account_name'),
                 'visa_account_number': post.get('visa_account_number'),
+                'transfer_amount': float(post.get('transfer_amount', 0)) if post.get('transfer_amount') else 0.0,
                 'payment_date': post.get('payment_date'),
                 'payment_time': float(post.get('payment_time', 0).replace(':', '.')) if post.get('payment_time') else 0.0,
                 'transaction_file': file_content,

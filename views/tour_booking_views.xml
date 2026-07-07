@@ -45,6 +45,7 @@
                                 <group>
                                     <field name="visa_account_name"/>
                                     <field name="visa_account_number"/>
+                                    <field name="transfer_amount"/>
                                 </group>
                                 <group>
                                     <field name="payment_date"/>

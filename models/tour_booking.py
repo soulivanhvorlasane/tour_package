@@ -33,6 +33,7 @@ class TourBooking(models.Model):
     # Option B: QR code payment
     visa_account_name = fields.Char(string='Visa Account Name')
     visa_account_number = fields.Char(string='Visa Account Number')
+    transfer_amount = fields.Float(string='Transfer Amount')
     transaction_file = fields.Binary(string='Transaction Capture File')
     transaction_filename = fields.Char(string='Transaction File Name')
     payment_date = fields.Date(string='Payment Date')

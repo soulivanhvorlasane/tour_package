@@ -814,6 +814,10 @@
                                                         <input type="text" name="visa_account_number" class="form-control" placeholder="**** **** **** 1234"/>
                                                     </div>
                                                     <div class="mb-3">
+                                                        <label class="form-label fw-bold">Transfer Amount</label>
+                                                        <input type="number" step="0.01" name="transfer_amount" class="form-control" placeholder="e.g. 1500.00" required="1"/>
+                                                    </div>
+                                                    <div class="mb-3">
                                                         <label class="form-label fw-bold">Upload Transaction File</label>
                                                         <input type="file" name="transaction_file" class="form-control" accept="image/*,.pdf"/>
                                                     </div>
