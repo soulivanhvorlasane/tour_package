@@ -45,8 +45,8 @@
   
   <record id="demo_calendar_laos_1" model="tour.calendar">
         <field name="package_id" ref="tour_package_demo1"/>
-        <field name="date_start" eval="(datetime.datetime.today() + relativedelta(days=7)).strftime('%Y-%m-%d')"/>
-        <field name="date_end" eval="(datetime.datetime.today() + relativedelta(days=14)).strftime('%Y-%m-%d')"/>
+        <field name="date_start" eval="(datetime.date.today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d')"/>
+        <field name="date_end" eval="(datetime.date.today() + datetime.timedelta(days=14)).strftime('%Y-%m-%d')"/>
         <field name="available_seats">20</field>
         <field name="state">open</field>
         <field name="is_demo" eval="True"/>
@@ -54,8 +54,8 @@
 
   <record id="demo_calendar_mekong_1" model="tour.calendar">
         <field name="package_id" ref="tour_package_demo2"/>
-        <field name="date_start" eval="(datetime.datetime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
-        <field name="date_end" eval="(datetime.datetime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+        <field name="date_start" eval="(datetime.date.today() + datetime.timedelta(days=10)).strftime('%Y-%m-%d')"/>
+        <field name="date_end" eval="(datetime.date.today() + datetime.timedelta(days=15)).strftime('%Y-%m-%d')"/>
         <field name="available_seats">15</field>
         <field name="state">open</field>
         <field name="is_demo" eval="True"/>
@@ -63,8 +63,8 @@
 
   <record id="demo_calendar_mountain_1" model="tour.calendar">
         <field name="package_id" ref="tour_package_demo3"/>
-        <field name="date_start" eval="(datetime.datetime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
-        <field name="date_end" eval="(datetime.datetime.today() + relativedelta(days=12)).strftime('%Y-%m-%d')"/>
+        <field name="date_start" eval="(datetime.date.today() + datetime.timedelta(days=5)).strftime('%Y-%m-%d')"/>
+        <field name="date_end" eval="(datetime.date.today() + datetime.timedelta(days=12)).strftime('%Y-%m-%d')"/>
         <field name="available_seats">10</field>
         <field name="state">open</field>
         <field name="is_demo" eval="True"/>
