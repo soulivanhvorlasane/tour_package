@@ -14,6 +14,8 @@ class TourCalendar(models.Model):
     booked_seats = fields.Integer(string='Booked Seats', compute='_compute_booked_seats', store=True)
     remaining_seats = fields.Integer(string='Remaining Seats', compute='_compute_remaining_seats', store=True)
     
+    is_demo = fields.Boolean(string='Is Demo Data', default=False)
+    
     booking_ids = fields.One2many('tour.booking', 'calendar_id', string='Bookings')
     
     state = fields.Selection([

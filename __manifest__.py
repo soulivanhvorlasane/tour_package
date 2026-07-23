@@ -27,11 +27,11 @@
         'views/portal_templates.xml',
         'views/website_templates.xml',
         'wizard/tour_booking_merge_wizard_views.xml',
+        'wizard/tour_demo_wizard_views.xml',
         'reports/booking_report_views.xml',
         'reports/booking_report_templates.xml',
     ],
     'demo': [
-        'data/demo.xml',
     ],
     'installable': True,
     'application': True,

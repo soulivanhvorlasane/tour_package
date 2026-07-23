@@ -23,6 +23,7 @@
     <field name="name">Laos Adventure</field>
     <field name="description">Explore Vientiane and Luang Prabang</field>
     <field name="price">500</field>
+    <field name="is_demo" eval="True"/>
     <field name="line_ids" eval="[
       (0, 0, {'product_id': ref('demo_product_car_fee'), 'name': 'Car Fee', 'quantity': 1, 'price_unit': 100}),
       (0, 0, {'product_id': ref('demo_product_room_fee'), 'name': 'Room Fee', 'quantity': 1, 'price_unit': 500}),
@@ -33,11 +34,13 @@
     <field name="name">Mekong Cruise</field>
     <field name="description">Relax on the Mekong River</field>
     <field name="price">800</field>
+    <field name="is_demo" eval="True"/>
   </record>
   <record id="tour_package_demo3" model="tour.package">
     <field name="name">Mountain Trek</field>
     <field name="description">Hike through northern Laos</field>
     <field name="price">600</field>
+    <field name="is_demo" eval="True"/>
   </record>
   
   <record id="demo_calendar_laos_1" model="tour.calendar">
@@ -46,6 +49,7 @@
         <field name="date_end" eval="(datetime.datetime.today() + relativedelta(days=14)).strftime('%Y-%m-%d')"/>
         <field name="available_seats">20</field>
         <field name="state">open</field>
+        <field name="is_demo" eval="True"/>
   </record>
 
   <record id="demo_calendar_mekong_1" model="tour.calendar">
@@ -54,6 +58,7 @@
         <field name="date_end" eval="(datetime.datetime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
         <field name="available_seats">15</field>
         <field name="state">open</field>
+        <field name="is_demo" eval="True"/>
   </record>
 
   <record id="demo_calendar_mountain_1" model="tour.calendar">
@@ -62,5 +67,6 @@
         <field name="date_end" eval="(datetime.datetime.today() + relativedelta(days=12)).strftime('%Y-%m-%d')"/>
         <field name="available_seats">10</field>
         <field name="state">open</field>
+        <field name="is_demo" eval="True"/>
   </record>
 </odoo>

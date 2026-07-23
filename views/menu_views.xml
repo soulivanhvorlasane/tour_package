@@ -6,7 +6,10 @@
     <!-- Sub Menu Items -->
     <menuitem id="menu_tour_management" name="Tours" parent="menu_tour_root" sequence="10"/>
     <menuitem id="menu_tour_bookings" name="Bookings" parent="menu_tour_root" sequence="20"/>
+    <!-- Configuration Menu -->
     <menuitem id="menu_tour_configuration" name="Configuration" parent="menu_tour_root" sequence="100"/>
+    
+    <menuitem id="menu_tour_demo_data" name="Manage Demo Data" parent="menu_tour_configuration" action="action_tour_demo_wizard" sequence="20"/>
 
     <!-- Actions -->
     <menuitem id="menu_tour_package_action" name="Packages" parent="menu_tour_configuration" action="action_tour_package" sequence="10"/>

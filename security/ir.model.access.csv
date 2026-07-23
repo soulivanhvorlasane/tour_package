@@ -14,3 +14,4 @@ access_tour_booking_portal,tour.booking.portal,model_tour_booking,base.group_por
 access_tour_booking_admin,tour.booking.admin,model_tour_booking,group_tour_admin,1,1,1,1
 access_tour_package_category_public,access.tour.package.category,model_tour_package_category,base.group_user,1,1,1,1
 access_tour_package_line,tour.package.line,model_tour_package_line,base.group_user,1,1,1,1
+access_tour_demo_wizard,tour.demo.wizard,model_tour_demo_wizard,base.group_system,1,1,1,1
