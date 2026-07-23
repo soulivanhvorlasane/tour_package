@@ -9,6 +9,19 @@ class TourDemoWizard(models.TransientModel):
     _description = 'Manage Tour Package Demo Data'
 
     def action_load_demo_data(self):
+        existing_demo = self.env['tour.package'].search([('is_demo', '=', True)], limit=1)
+        if existing_demo:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Warning',
+                    'message': 'Demo data is already set!',
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
+            
         try:
             convert_file(self.env, 'tour_package', 'data/demo.xml', None, mode='init', noupdate=False, kind='data')
             return {
