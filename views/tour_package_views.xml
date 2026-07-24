@@ -93,7 +93,7 @@
             <list string="Tour Packages">
                 <field name="name"/>
                 <field name="category_id"/>
-                <field name="description"/>
+                <field name="description" class="text-truncate" style="max-width: 300px;"/>
                 <field name="price"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
