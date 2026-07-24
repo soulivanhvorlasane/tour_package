@@ -18,6 +18,7 @@ class TourPackage(models.Model):
     is_demo = fields.Boolean(string='Is Demo Data', default=False)
     category_id = fields.Many2one('tour.package.category', string='Category')
     description = fields.Html(string='Description')
+    description_short = fields.Char(string='Description', compute='_compute_description_short')
     price = fields.Float(string='Price per Person', required=True, tracking=True)
     duration = fields.Integer(string='Duration (Days)')
     cover_image = fields.Binary(string='Cover Image', attachment=True)
@@ -42,6 +43,15 @@ class TourPackage(models.Model):
             record.untaxed_amount = untaxed
             record.tax_amount = tax
             record.total_amount = untaxed + tax
+            
+    @api.depends('description')
+    def _compute_description_short(self):
+        for record in self:
+            if record.description:
+                record.description_short = tools.html2plaintext(record.description)
+            else:
+                record.description_short = False
+    
     
     calendar_ids = fields.One2many('tour.calendar', 'package_id', string='Availabilities')
     
